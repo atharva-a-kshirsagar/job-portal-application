@@ -10,6 +10,7 @@ public class Company {
 
 	private Long companyId;
 	private Long userId;
-	private Long companyName;
+	private String companyName;
+	private String companyDomain;
 	private String headOffice;
 }

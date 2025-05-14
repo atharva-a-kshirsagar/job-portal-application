@@ -6,6 +6,7 @@ public class Experience {
 
 	private Long experienceId;
 	private Long userId;
+	private String role;
 	private String companyName;
 	private LocalDate startDate;
 	private LocalDate endDate;
