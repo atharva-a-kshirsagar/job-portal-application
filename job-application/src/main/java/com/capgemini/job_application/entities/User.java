@@ -159,6 +159,7 @@ public class User {
 				&& Objects.equals(userId, other.userId) && Objects.equals(userName, other.userName)
 				&& Objects.equals(userType, other.userType);
 	}
+
 	
 	
 	
