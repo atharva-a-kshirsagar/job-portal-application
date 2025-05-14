@@ -21,5 +21,19 @@ public class Qualification {
 	private String url;
 	private String institute;
 	private String degree;
+	public Qualification(Long qualificationId, Long userId, LocalDate startDate, LocalDate endDate,
+			String qualificationType, String url, String institute, String degree) {
+		super();
+		this.qualificationId = qualificationId;
+		this.userId = userId;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.qualificationType = qualificationType;
+		this.url = url;
+		this.institute = institute;
+		this.degree = degree;
+	}
+	
+	
 }
 
