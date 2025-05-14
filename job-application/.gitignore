@@ -39,10 +39,6 @@ Thumbs.db
 
 # Environment & Config
 .env
-application.properties
-application.yml
-application-dev.properties
-application-prod.properties
 
 # Lombok
 *.lombok.config
