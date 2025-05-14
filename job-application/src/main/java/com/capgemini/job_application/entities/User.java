@@ -20,5 +20,6 @@ public class User {
 	private String userType;
 	private Integer age;
 	private String gender;
+	private String location;
 	
 }
