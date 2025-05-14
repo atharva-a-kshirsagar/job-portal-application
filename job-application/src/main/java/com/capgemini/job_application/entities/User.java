@@ -1,7 +1,4 @@
 package com.capgemini.job_application.entities;
-
-import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -159,8 +156,4 @@ public class User {
 				&& Objects.equals(userId, other.userId) && Objects.equals(userName, other.userName)
 				&& Objects.equals(userType, other.userType);
 	}
-
-	
-	
-	
 }
