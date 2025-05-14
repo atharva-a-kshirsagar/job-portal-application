@@ -16,11 +16,19 @@ public class Application{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "application_id")
 	private Long applicationId;
-
+	
+	@Column(name = "user_id")
 	private Long userId;
+	
+	@Column(name = "job_id")
 	private Long jobId;
+	
+	@Column(name = "applied_date")
 	private LocalDate appliedDate;
+	
+	@Column(name = "status")
 	private String status;
 
 }
