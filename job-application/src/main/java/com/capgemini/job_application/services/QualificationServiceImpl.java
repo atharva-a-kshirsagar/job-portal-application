@@ -15,44 +15,68 @@ public class QualificationServiceImpl implements QualificationService{
 	
 	@Autowired
 	public QualificationServiceImpl(QualificationRepository qualificationRepository) {
-		super();
 		this.qualificationRepository = qualificationRepository;
 	}
 
 	@Override
 	public List<Qualification> getAllQualifications() {
-		// TODO Auto-generated method stub
-		return null;
+		return qualificationRepository.findAll();
 	}
 
 	@Override
 	public Qualification findQualificationById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return qualificationRepository.findById(id).orElseThrow();
 	}
 
 	@Override
 	public Qualification createQualification(Qualification qualification) {
-		// TODO Auto-generated method stub
-		return null;
+		return qualificationRepository.save(qualification);
 	}
 
 	@Override
 	public Qualification updateQualification(Long id, Qualification qualification) {
-		// TODO Auto-generated method stub
-		return null;
+		Qualification dbQualification = qualificationRepository.findById(id)
+				.orElseThrow(()-> new RuntimeException("Qualification not found with id: " + id));
+		dbQualification.setDegree(qualification.getDegree());
+		dbQualification.setInstitute(qualification.getInstitute());
+		dbQualification.setQualificationType(qualification.getQualificationType());
+		dbQualification.setStartDate(qualification.getStartDate());
+		dbQualification.setEndDate(qualification.getEndDate());
+		dbQualification.setUrl(qualification.getUrl());
+		
+		return qualificationRepository.save(dbQualification);
 	}
 
 	@Override
 	public Qualification patchQualification(Long id, Qualification qualification) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Qualification existing = findQualificationById(id);
+				if(qualification.getDegree() != null) {
+					existing.setDegree(qualification.getDegree());
+				}
+				if(qualification.getInstitute() != null) {
+					existing.setInstitute(qualification.getInstitute());
+				}
+				if(qualification.getQualificationType() != null) {
+					existing.setQualificationType(qualification.getQualificationType());
+				}
+				if(qualification.getStartDate() != null) {
+					existing.setStartDate(qualification.getStartDate());
+				}
+				if(qualification.getEndDate() != null) {
+					existing.setEndDate(qualification.getEndDate());
+				}
+				if(qualification.getUrl() != null) {
+					existing.setUrl(qualification.getUrl());
+				}
+				return qualificationRepository.save(existing);
+			}
 
 	@Override
 	public void deleteQualification(Long id) {
-		// TODO Auto-generated method stub
-		
+		if(!qualificationRepository.existsById(id)) {
+			throw new RuntimeException("Qualification not found with Id:" + id);
+		}
+		qualificationRepository.deleteById(id);
 	}
 
 }

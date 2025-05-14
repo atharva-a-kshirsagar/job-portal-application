@@ -11,34 +11,27 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "qualification")
 public class Qualification {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "qualification_id")
+	
 	private Long qualificationId;
-	
-	@Column(name = "user_id")
+
 	private Long userId;
-	
-	@Column(name = "start_date")
+
 	private LocalDate startDate;
-	
-	@Column(name = "end_date")
+
 	private LocalDate endDate;
-	
-	@Column(name = "qualification_type")
+
 	private String qualificationType;
-	
-	@Column(name = "url")
+
 	private String url;
-	
-	@Column(name = "institute")
+
 	private String institute;
-	
-	@Column(name = "degree")
+
 	private String degree;
+
 	public Qualification(Long qualificationId, Long userId, LocalDate startDate, LocalDate endDate,
 			String qualificationType, String url, String institute, String degree) {
 		super();
@@ -51,67 +44,87 @@ public class Qualification {
 		this.institute = institute;
 		this.degree = degree;
 	}
+
 	public Qualification() {
 		super();
 	}
+
 	public Long getQualificationId() {
 		return qualificationId;
 	}
+
 	public void setQualificationId(Long qualificationId) {
 		this.qualificationId = qualificationId;
 	}
+
 	public Long getUserId() {
 		return userId;
 	}
+
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
 	public LocalDate getStartDate() {
 		return startDate;
 	}
+
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
+
 	public LocalDate getEndDate() {
 		return endDate;
 	}
+
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
+
 	public String getQualificationType() {
 		return qualificationType;
 	}
+
 	public void setQualificationType(String qualificationType) {
 		this.qualificationType = qualificationType;
 	}
+
 	public String getUrl() {
 		return url;
 	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	public String getInstitute() {
 		return institute;
 	}
+
 	public void setInstitute(String institute) {
 		this.institute = institute;
 	}
+
 	public String getDegree() {
 		return degree;
 	}
+
 	public void setDegree(String degree) {
 		this.degree = degree;
 	}
+
 	@Override
 	public String toString() {
 		return "Qualification [qualificationId=" + qualificationId + ", userId=" + userId + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", qualificationType=" + qualificationType + ", url=" + url + ", institute="
 				+ institute + ", degree=" + degree + "]";
 	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(degree, endDate, institute, qualificationId, qualificationType, startDate, url, userId);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -127,7 +140,5 @@ public class Qualification {
 				&& Objects.equals(startDate, other.startDate) && Objects.equals(url, other.url)
 				&& Objects.equals(userId, other.userId);
 	}
-	
-	
-}
 
+}
