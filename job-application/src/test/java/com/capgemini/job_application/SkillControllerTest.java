@@ -2,6 +2,7 @@ package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.SkillController;
 import com.capgemini.job_application.entities.Skill;
+import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.services.SkillService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +72,17 @@ public class SkillControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.skillName").value("Java"));
     }
+    
+    @Test
+    void testGetSkillById_NotFound() throws Exception {
+        when(skillService.getSkillById(1L)).thenThrow(new SkillNotFoundException("Skill not found"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/skills/1"))
+               .andExpect(status().isNotFound())
+               .andExpect(jsonPath("$.message").value("Skill not found"));
+    }
+
+    
 
     @Test
     void testGetAllSkills() throws Exception {

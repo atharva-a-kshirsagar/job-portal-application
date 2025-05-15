@@ -42,7 +42,7 @@ public class SkillController {
     public ResponseEntity<Skill> getSkillById(@PathVariable Long skillId) {
         Skill skill = skillService.getSkillById(skillId);
         if (skill == null) {
-        	log.warn("Skill with ID {} not found for update", skillId);
+        	log.warn("Skill with ID {} not found ", skillId);
             return ResponseEntity.notFound().build();
         }
         log.info("Skill with ID {} retrieved successfully", skillId);
