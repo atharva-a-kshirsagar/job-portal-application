@@ -51,4 +51,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 		existingExp.setRole(updatedExperience.getRole());
 		return expRepo.save(existingExp);
 	}
+
+	@Override
+	public List<Experience> getExpriences() {
+		return expRepo.findAll();
+	}
 }

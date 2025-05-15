@@ -3,7 +3,6 @@ package com.capgemini.job_application.entities;
 import java.time.LocalDate;
 
 import java.util.Objects;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,18 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-@Table(name="experience")
 @Entity
+@Table(name = "experience")
 public class Experience {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "experience_id")
 	private Long experienceId;
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "user_id", nullable = false)
-//	private User user;
-	
 	@Column(name = "user_id")
 	private Long userId;
 	

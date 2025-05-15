@@ -12,6 +12,7 @@ public interface ExperienceService {
     Experience createExperience(Experience experience);
     void deleteExperienceById(Long experienceId);
     void deleteAllExperiencesByUserId(Long userId);
+    List<Experience> getExpriences();
     Experience updateExperience(Long expId, Long userId, Experience updatedExperience);
 }
 

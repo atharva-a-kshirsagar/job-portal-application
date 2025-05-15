@@ -1,16 +1,95 @@
 package com.capgemini.job_application.entities;
 
+import java.util.*;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 @Entity
+@Table(name="skill")
 public class Skill {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="skill_id")
 	private Long skillId;
 	
+	@Column(name ="skill_name")
 	private String skillName;
+	
+//	@ManyToMany(mappedBy="skills")
+//	private Set<User> users = new HashSet<>();
+		
+	public Skill() {
+
+	}
+
+	public Skill(Long skillId, String skillName) {
+		super();
+		this.skillId = skillId;
+		this.skillName = skillName;
+	}
+	
+
+//	public Skill(Long skillId, String skillName, Set<User> users) {
+//		super();
+//		this.skillId = skillId;
+//		this.skillName = skillName;
+//		this.users = users;
+//	}
+
+	public Long getSkillId() {
+		return skillId;
+	}
+
+	public void setSkillId(Long skillId) {
+		this.skillId = skillId;
+	}
+
+	public String getSkillName() {
+		return skillName;
+	}
+
+	public void setSkillName(String skillName) {
+		this.skillName = skillName;
+	}
+
+//	public Set<User> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Set<User> users) {
+//		this.users = users;
+//	}
+
+	@Override
+	public String toString() {
+		return "Skill [skillId=" + skillId + ", skillName=" + skillName +  "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(skillId, skillName);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Skill other = (Skill) obj;
+		return Objects.equals(skillId, other.skillId) && Objects.equals(skillName, other.skillName);
+				//&& Objects.equals(users, other.users);
+	}
+
+    
+	
+	
 }

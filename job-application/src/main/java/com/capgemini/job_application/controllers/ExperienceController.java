@@ -35,6 +35,11 @@ public class ExperienceController {
 		List<Experience> experiences = expService.getExperienceByUser_id(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(experiences);
 	}
+	@GetMapping
+	public ResponseEntity<List<Experience>> getExperiences(){
+		List<Experience> experiences = expService.getExpriences();
+		return ResponseEntity.status(HttpStatus.OK).body(experiences);
+	}
 	@PostMapping
 	public ResponseEntity<Experience> createExperience(@RequestBody Experience exp){
 		Experience experience = expService.createExperience(exp);
