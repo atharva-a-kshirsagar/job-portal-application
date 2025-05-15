@@ -16,6 +16,7 @@ logs/
 
 # Spring Boot
 .spring-boot-devtools.properties
+application.properties
 
 # IntelliJ IDEA
 .idea/
