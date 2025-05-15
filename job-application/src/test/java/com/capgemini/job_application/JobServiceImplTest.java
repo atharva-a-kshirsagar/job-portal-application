@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 
-
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class JobServiceImplTest {
 	    @BeforeEach
 	    void setUp() {
 	        MockitoAnnotations.openMocks(this);
-	        job = new Job(1L, 101L, "Developer", 80000.0,"Java Job", "Bangalore");
+	        job = new Job(1L, 101L, "Developer", 80000.0,"Java Job", "Bangalore",LocalDate.of(2025, 6, 30),LocalDate.of(2025, 6, 30));
 	    }
 
 	    @Test
@@ -75,7 +75,7 @@ public class JobServiceImplTest {
 
 	    @Test
 	    void testUpdateJob() {
-	        Job updated = new Job(1L, 102L, "Senior Developer", 90000.0,"Updated", "Mumbai");
+	        Job updated = new Job(1L, 102L, "Senior Developer", 90000.0,"Updated", "Mumbai",LocalDate.of(2025, 6, 30),LocalDate.of(2025, 6, 30));
 	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
 	        when(jobRepository.save(any(Job.class))).thenReturn(updated);
 
@@ -85,7 +85,7 @@ public class JobServiceImplTest {
 
 	    @Test
 	    void testPatchJob() {
-	        Job patch = new Job(null, null, "Lead Dev", null, null, "Delhi");
+	        Job patch = new Job(null, null, "Lead Dev", null, null, "Delhi",null,null);
 	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
 	        when(jobRepository.save(any(Job.class))).thenReturn(job);
 
