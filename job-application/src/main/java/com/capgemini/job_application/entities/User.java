@@ -1,4 +1,7 @@
 package com.capgemini.job_application.entities;
+
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +41,7 @@ public class User {
 	
 	@Column(name = "gender")
 	private String gender;
+	
 
 	public User(Long userId, String userName, String userEmail, String phone, String password, String address,
 			String userType, Integer age, String gender) {

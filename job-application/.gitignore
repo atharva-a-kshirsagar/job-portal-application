@@ -61,4 +61,3 @@ Thumbs.db
 node_modules/
 dist/
 build/
-application.properties
