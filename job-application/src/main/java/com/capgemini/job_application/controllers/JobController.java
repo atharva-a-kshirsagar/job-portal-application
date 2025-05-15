@@ -6,25 +6,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.services.JobService;
 
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
-
-@CrossOrigin(origins ="*")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/jobs")
+@Slf4j
 public class JobController {
 
 	private final JobService jobService;
@@ -33,43 +27,56 @@ public class JobController {
 	public JobController(JobService jobService) {
 		this.jobService = jobService;
 	}
+
 	@GetMapping
 	public ResponseEntity<List<Job>> getAllJobs() {
+		log.info("GET /api/jobs - Fetching all jobs");
 		List<Job> jobs = jobService.getAllJobs();
 		return ResponseEntity.status(HttpStatus.OK).body(jobs);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Job> getJob(@PathVariable Long id) {
+		log.info("GET /api/jobs/{} - Fetching job by ID", id);
 		Job job = jobService.getJobById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(job);
-
-		
 	}
 
 	@PostMapping
-	public ResponseEntity<Job> createJob(@RequestBody Job job) {
+	public ResponseEntity<Job> createJob(@Valid @RequestBody Job job, BindingResult result) {
+		log.info("POST /api/jobs - Creating new job");
+		if (result.hasErrors()) {
+			throw new IllegalArgumentException("Invalid Data Form");
+		}
 		Job saved = jobService.createJob(job);
-		return ResponseEntity.status(HttpStatus.CREATED).location(URI.create("/api/bookings/" + saved.getJobId()))
+		return ResponseEntity.status(HttpStatus.CREATED).location(URI.create("/api/jobs/" + saved.getJobId()))
 				.body(saved);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job newJob) {
+	public ResponseEntity<Job> updateJob(@PathVariable Long id, @Valid @RequestBody Job newJob, BindingResult result) {
+		log.info("PUT /api/jobs/{} - Updating job", id);
+		if (result.hasErrors()) {
+			throw new IllegalArgumentException("Invalid Data Form");
+		}
 		Job updated = jobService.updateJob(id, newJob);
 		return ResponseEntity.status(HttpStatus.OK).body(updated);
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<Job> patchJob(@PathVariable Long id, @RequestBody Job patch) {
+	public ResponseEntity<Job> patchJob(@PathVariable Long id, @Valid @RequestBody Job patch, BindingResult result) {
+		log.info("PATCH /api/jobs/{} - Patching job", id);
+		if (result.hasErrors()) {
+			throw new IllegalArgumentException("Invalid Data Form");
+		}
 		Job updated = jobService.patchJob(id, patch);
 		return ResponseEntity.status(HttpStatus.OK).body(updated);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteJob(@PathVariable Long id) {
+		log.info("DELETE /api/jobs/{} - Deleting job", id);
 		jobService.deleteJob(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		
 	}
 }

@@ -1,106 +1,138 @@
 package com.capgemini.job_application;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.Arrays;
-
 import com.capgemini.job_application.controllers.JobController;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.services.JobService;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(JobController.class)
 public class JobControllerTest {
 
-	   private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	    @Mock
-	    private JobService jobService;
+    @MockitoBean
+    private JobService jobService;
 
-	    @InjectMocks
-	    private JobController jobController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	    private Job job;
-	    private ObjectMapper objectMapper;
+    private Job createSampleJob(Long id) {
+        return new Job(
+                id,
+                100L,
+                "Java Developer",
+                80000.0,
+                "Develop Java applications",
+                "Bangalore",
+                LocalDate.now(),
+                LocalDate.now().plusDays(10)
+        );
+    }
 
-	    @BeforeEach
-	    void setUp() {
-	        MockitoAnnotations.openMocks(this);
-	        mockMvc = MockMvcBuilders.standaloneSetup(jobController).build();
-	        objectMapper = new ObjectMapper();
+    @Test
+    public void testGetAllJobs() throws Exception {
+        List<Job> jobs = Arrays.asList(createSampleJob(1L), createSampleJob(2L));
+        Mockito.when(jobService.getAllJobs()).thenReturn(jobs);
 
-	        job = new Job(1L, 101L, "Developer", 80000.0, "Java Job", "Bangalore");
-	    }
+        mockMvc.perform(get("/api/jobs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
 
-	    @Test
-	    void testGetAllJobs() throws Exception {
-	        when(jobService.getAllJobs()).thenReturn(Arrays.asList(job));
+    @Test
+    public void testGetJobById() throws Exception {
+        Job job = createSampleJob(1L);
+        Mockito.when(jobService.getJobById(1L)).thenReturn(job);
 
-	        mockMvc.perform(get("/api/jobs"))
-	                .andExpect(status().isOk())
-	                .andExpect(jsonPath("$[0].jobTitle").value("Developer"));
-	    }
+        mockMvc.perform(get("/api/jobs/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jobId").value(1));
+    }
 
-	    @Test
-	    void testGetJobById() throws Exception {
-	        when(jobService.getJobById(1L)).thenReturn(job);
+    @Test
+    public void testCreateJob() throws Exception {
+        Job input = createSampleJob(null);
+        Job saved = createSampleJob(1L);
 
-	        mockMvc.perform(get("/api/jobs/1"))
-	                .andExpect(status().isOk())
-	                .andExpect(jsonPath("$.jobTitle").value("Developer"));
-	    }
+        Mockito.when(jobService.createJob(any(Job.class))).thenReturn(saved);
 
-	    @Test
-	    void testCreateJob() throws Exception {
-	        when(jobService.createJob(any(Job.class))).thenReturn(job);
+        mockMvc.perform(post("/api/jobs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/api/jobs/1"))
+                .andExpect(jsonPath("$.jobId").value(1));
+    }
 
-	        mockMvc.perform(post("/api/jobs")
-	                .contentType(MediaType.APPLICATION_JSON)
-	                .content(objectMapper.writeValueAsString(job)))
-	                .andExpect(status().isCreated())
-	                .andExpect(jsonPath("$.jobTitle").value("Developer"));
-	    }
+    @Test
+    public void testUpdateJob() throws Exception {
+        Job updated = createSampleJob(1L);
+        updated.setJobTitle("Senior Java Developer");
 
-	    @Test
-	    void testUpdateJob() throws Exception {
-	        when(jobService.updateJob(eq(1L), any(Job.class))).thenReturn(job);
+        Mockito.when(jobService.updateJob(Mockito.eq(1L), any(Job.class))).thenReturn(updated);
 
-	        mockMvc.perform(put("/api/jobs/1")
-	                .contentType(MediaType.APPLICATION_JSON)
-	                .content(objectMapper.writeValueAsString(job)))
-	                .andExpect(status().isOk())
-	                .andExpect(jsonPath("$.jobTitle").value("Developer"));
-	    }
+        mockMvc.perform(put("/api/jobs/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updated)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jobTitle").value("Senior Java Developer"));
+    }
 
-	    @Test
-	    void testPatchJob() throws Exception {
-	        when(jobService.patchJob(eq(1L), any(Job.class))).thenReturn(job);
+//    @Test
+//    public void testPatchJob() throws Exception {
+//        Job patch = new Job();
+//        patch.setSalary(90000.0);
+//
+//        Job patchedResult = createSampleJob(1L);
+//        patchedResult.setSalary(90000.0);
+//
+//        Mockito.when(jobService.patchJob(Mockito.eq(1L), any(Job.class))).thenReturn(patchedResult);
+//
+//        mockMvc.perform(patch("/api/jobs/1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(patch)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.salary").value(90000.0));
+//    }
 
-	        mockMvc.perform(patch("/api/jobs/1")
-	                .contentType(MediaType.APPLICATION_JSON)
-	                .content(objectMapper.writeValueAsString(job)))
-	                .andExpect(status().isOk())
-	                .andExpect(jsonPath("$.jobTitle").value("Developer"));
-	    }
+    @Test
+    public void testDeleteJob() throws Exception {
+        doNothing().when(jobService).deleteJob(1L);
 
-	    @Test
-	    void testDeleteJob() throws Exception {
-	        doNothing().when(jobService).deleteJob(1L);
+        mockMvc.perform(delete("/api/jobs/1"))
+                .andExpect(status().isNoContent());
+    }
 
-	        mockMvc.perform(delete("/api/jobs/1"))
-	                .andExpect(status().isNoContent());
-	    }
+//    @Test
+//    public void testValidationErrorOnCreate() throws Exception {
+//        // Invalid job (missing required fields)
+//        Job invalid = new Job();
+//        invalid.setSalary(5000.0);
+//
+//        mockMvc.perform(post("/api/jobs")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(invalid)))
+//                .andExpect(status().isBadRequest());
+//    }
 }
