@@ -16,6 +16,7 @@ logs/
 
 # Spring Boot
 .spring-boot-devtools.properties
+application.properties
 
 # IntelliJ IDEA
 .idea/
@@ -61,4 +62,3 @@ Thumbs.db
 node_modules/
 dist/
 build/
-application.properties

@@ -1,0 +1,109 @@
+package com.capgemini.job_application;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.capgemini.job_application.entities.Job;
+import com.capgemini.job_application.repositories.JobRepository;
+import com.capgemini.job_application.services.JobServiceImpl;
+
+public class JobServiceImplTest {
+
+	 @Mock
+	    private JobRepository jobRepository;
+
+	    @InjectMocks
+	    private JobServiceImpl jobService;
+
+	    private Job job;
+
+	    @BeforeEach
+	    void setUp() {
+	        MockitoAnnotations.openMocks(this);
+	        job = new Job(1L, 101L, "Developer", 80000.0,"Java Job", "Bangalore");
+	    }
+
+	    @Test
+	    void testGetAllJobs() {
+	        when(jobRepository.findAll()).thenReturn(Arrays.asList(job));
+	        
+	        List<Job> jobs = jobService.getAllJobs();
+	        
+	        assertEquals(1, jobs.size());
+	        verify(jobRepository, times(1)).findAll();  
+	    }
+
+
+	    @Test
+	    void testGetJobByIdFound() {
+	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
+	        Job found = jobService.getJobById(1L);
+	        assertEquals("Developer", found.getJobTitle());
+	    }
+
+	    @Test
+	    void testGetJobByIdNotFound() {
+	        when(jobRepository.findById(1L)).thenReturn(Optional.empty());
+	        Exception ex = assertThrows(RuntimeException.class, () -> jobService.getJobById(1L));
+	        assertTrue(ex.getMessage().contains("Job not found"));
+	    }
+
+	    @Test
+	    void testCreateJob() {
+	        when(jobRepository.save(job)).thenReturn(job);
+	        Job created = jobService.createJob(job);
+	        assertEquals("Developer", created.getJobTitle());
+	    }
+
+	    @Test
+	    void testUpdateJob() {
+	        Job updated = new Job(1L, 102L, "Senior Developer", 90000.0,"Updated", "Mumbai");
+	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
+	        when(jobRepository.save(any(Job.class))).thenReturn(updated);
+
+	        Job result = jobService.updateJob(1L, updated);
+	        assertEquals("Senior Developer", result.getJobTitle());
+	    }
+
+	    @Test
+	    void testPatchJob() {
+	        Job patch = new Job(null, null, "Lead Dev", null, null, "Delhi");
+	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
+	        when(jobRepository.save(any(Job.class))).thenReturn(job);
+
+	        Job patched = jobService.patchJob(1L, patch);
+	        assertEquals("Lead Dev", patched.getJobTitle());
+	        assertEquals("Delhi", patched.getJobLocation());
+	    }
+
+	    @Test
+	    void testDeleteJobFound() {
+	        when(jobRepository.existsById(1L)).thenReturn(true);
+	        doNothing().when(jobRepository).deleteById(1L);
+	        assertDoesNotThrow(() -> jobService.deleteJob(1L));
+	    }
+
+	    @Test
+	    void testDeleteJobNotFound() {
+	        when(jobRepository.existsById(1L)).thenReturn(false);
+	        assertThrows(RuntimeException.class, () -> jobService.deleteJob(1L));
+	    }
+}
