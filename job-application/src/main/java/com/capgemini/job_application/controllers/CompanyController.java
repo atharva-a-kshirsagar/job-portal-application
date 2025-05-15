@@ -1,65 +1,77 @@
 package com.capgemini.job_application.controllers;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.services.CompanyService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/companies")
+@Slf4j
+@RequiredArgsConstructor
 public class CompanyController {
 
 	private final CompanyService companyService;
 
-	@Autowired
-	public CompanyController(CompanyService companyService) {
-		this.companyService = companyService;
-	}
-
 	@GetMapping
 	public ResponseEntity<List<Company>> getAllCompanies() {
+		log.info("Received request to fetch all companies");
 		List<Company> companies = companyService.getAllCompanies();
+		log.debug("Returning {} companies", companies.size());
 		return ResponseEntity.status(HttpStatus.OK).body(companies);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Company> getCompany(@PathVariable Long id) {
-		return ResponseEntity.ok(companyService.getCompanyById(id));
+		log.info("Received request to fetch company with ID: {}", id);
+		Company company = companyService.getCompanyById(id);
+		log.debug("Fetched company: {}", company);
+		return ResponseEntity.status(HttpStatus.OK).body(company);
 	}
 
 	@PostMapping
-	public ResponseEntity<Company> createCompany(@RequestBody Company company) {
+	public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company, BindingResult result) {
+		log.info("Received request to create company: {}", company);
+		if (result.hasErrors()) {
+			throw new IllegalArgumentException("Invalid Data");
+		}
 		Company saved = companyService.createCompany(company);
+		log.debug("Company created with ID: {}", saved.getCompanyId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Company> updateCompany(@PathVariable Long id, @RequestBody Company company) {
-		return ResponseEntity.ok(companyService.updateCompany(id, company));
+	public ResponseEntity<Company> updateCompany(@PathVariable Long id, @Valid @RequestBody Company company,
+			BindingResult result) {
+		log.info("Received request to update company with ID: {}", id);
+		if (result.hasErrors()) {
+			throw new IllegalArgumentException("Invalid Data");
+		}
+		Company updated = companyService.updateCompany(id, company);
+		log.debug("Updated company: {}", updated);
+		return ResponseEntity.status(HttpStatus.OK).body(updated);
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<Company> patchCompany(@PathVariable Long id, @RequestBody Company company) {
-		return ResponseEntity.ok(companyService.patchCompany(id, company));
-	}
+//	@PatchMapping("/{id}")
+//	public ResponseEntity<Company> patchCompany(@PathVariable Long id, @Valid @RequestBody Company company) {
+//		log.info("Received request to patch company with ID: {}", id);
+//		Company patched = companyService.patchCompany(id, company);
+//		log.debug("Patched company: {}", patched);
+//		return ResponseEntity.status(HttpStatus.OK).body(patched);
+//	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
+		log.info("Received request to delete company with ID: {}", id);
 		companyService.deleteCompany(id);
-		return ResponseEntity.noContent().build();
+		log.info("Company with ID {} successfully deleted", id);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
-
 }

@@ -1,73 +1,86 @@
 package com.capgemini.job_application.services;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.repositories.CompanyRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
 	private final CompanyRepository companyRepository;
 
-	@Autowired
-	public CompanyServiceImpl(CompanyRepository companyRepository) {
-		this.companyRepository = companyRepository;
-	}
-
 	@Override
 	public List<Company> getAllCompanies() {
+		log.debug("Fetching all companies from the repository");
 		return companyRepository.findAll();
 	}
 
 	@Override
 	public Company getCompanyById(Long id) {
-		return companyRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Company not found with ID: " + id));
+		log.debug("Fetching company by ID: {}", id);
+		return companyRepository.findById(id).orElseThrow(() -> {
+			log.warn("Company not found with ID: {}", id);
+			return new RuntimeException("Company not found with ID: " + id);
+		});
 	}
 
 	@Override
 	public Company createCompany(Company company) {
+		log.debug("Saving new company: {}", company);
 		return companyRepository.save(company);
 	}
 
 	@Override
 	public Company updateCompany(Long id, Company company) {
+		log.debug("Updating company with ID: {}", id);
 		Company existing = getCompanyById(id);
 		existing.setCompanyName(company.getCompanyName());
 		existing.setUserId(company.getUserId());
 		existing.setCompanyDomain(company.getCompanyDomain());
 		existing.setHeadOffice(company.getHeadOffice());
-		return companyRepository.save(existing);
+		Company updated = companyRepository.save(existing);
+		log.debug("Updated company: {}", updated);
+		return updated;
 	}
 
 	@Override
 	public Company patchCompany(Long id, Company company) {
+		log.debug("Patching company with ID: {}", id);
 		Company existing = getCompanyById(id);
 		if (company.getCompanyName() != null) {
+			log.debug("Updating company name to: {}", company.getCompanyName());
 			existing.setCompanyName(company.getCompanyName());
 		}
 		if (company.getUserId() != null) {
+			log.debug("Updating user ID to: {}", company.getUserId());
 			existing.setUserId(company.getUserId());
 		}
 		if (company.getCompanyDomain() != null) {
+			log.debug("Updating domain to: {}", company.getCompanyDomain());
 			existing.setCompanyDomain(company.getCompanyDomain());
 		}
 		if (company.getHeadOffice() != null) {
+			log.debug("Updating head office to: {}", company.getHeadOffice());
 			existing.setHeadOffice(company.getHeadOffice());
 		}
-		return companyRepository.save(existing);
+		Company patched = companyRepository.save(existing);
+		log.debug("Patched company: {}", patched);
+		return patched;
 	}
 
 	@Override
 	public void deleteCompany(Long id) {
+		log.debug("Deleting company with ID: {}", id);
 		if (!companyRepository.existsById(id)) {
+			log.warn("Company not found with ID: {}", id);
 			throw new RuntimeException("Company not found with ID: " + id);
 		}
 		companyRepository.deleteById(id);
 	}
-
 }
