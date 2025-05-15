@@ -99,22 +99,6 @@ public class JobControllerTest {
                 .andExpect(jsonPath("$.jobTitle").value("Senior Java Developer"));
     }
 
-//    @Test
-//    public void testPatchJob() throws Exception {
-//        Job patch = new Job();
-//        patch.setSalary(90000.0);
-//
-//        Job patchedResult = createSampleJob(1L);
-//        patchedResult.setSalary(90000.0);
-//
-//        Mockito.when(jobService.patchJob(Mockito.eq(1L), any(Job.class))).thenReturn(patchedResult);
-//
-//        mockMvc.perform(patch("/api/jobs/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(patch)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.salary").value(90000.0));
-//    }
 
     @Test
     public void testDeleteJob() throws Exception {
@@ -124,15 +108,4 @@ public class JobControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-//    @Test
-//    public void testValidationErrorOnCreate() throws Exception {
-//        // Invalid job (missing required fields)
-//        Job invalid = new Job();
-//        invalid.setSalary(5000.0);
-//
-//        mockMvc.perform(post("/api/jobs")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(invalid)))
-//                .andExpect(status().isBadRequest());
-//    }
 }

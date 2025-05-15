@@ -52,7 +52,7 @@ public class UserController {
 	public ResponseEntity<User> createUser(@Valid @RequestBody User user, BindingResult result) {
 	    if (result.hasErrors()) {
 	        log.warn("Validation failed for user creation: {}", result.getAllErrors());
-	        throw new IllegalArgumentException("Invalid Data Found");
+	        throw new IllegalArgumentException(result.getFieldErrors().toString());
 	    }
 	    log.info("Received request to create user: {}", user);
 	    User savedUser = userService.createUser(user);
@@ -64,7 +64,7 @@ public class UserController {
 	@PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User user,  BindingResult result) {
 		if(result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data Found");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		log.info("Received request to update user: {}", user); 
 		User updatedUser = userService.updateUser(id, user);

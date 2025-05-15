@@ -56,21 +56,7 @@ public class JobServiceImpl implements JobService {
 		return jobRepository.save(existing);
 	}
 
-	@Override
-	public Job patchJob(Long id, Job patch) {
-		log.info("Patching job with ID: {}", id);
-		Job existing = jobRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Booking not found with Id:" + id));
 
-		if (patch.getCompanyId() != null) existing.setCompanyId(patch.getCompanyId());
-		if (patch.getJobTitle() != null) existing.setJobTitle(patch.getJobTitle());
-		if (patch.getDescription() != null) existing.setDescription(patch.getDescription());
-		if (patch.getSalary() != null) existing.setSalary(patch.getSalary());
-		if (patch.getJobLocation() != null) existing.setJobLocation(patch.getJobLocation());
-		if (patch.getDeadlineDate() != null) existing.setDeadlineDate(patch.getDeadlineDate());
-
-		return jobRepository.save(existing);
-	}
 
 	@Override
 	public void deleteJob(Long id) {

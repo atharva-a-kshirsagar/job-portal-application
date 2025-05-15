@@ -46,7 +46,7 @@ public class JobController {
 	public ResponseEntity<Job> createJob(@Valid @RequestBody Job job, BindingResult result) {
 		log.info("POST /api/jobs - Creating new job");
 		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data Form");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		Job saved = jobService.createJob(job);
 		return ResponseEntity.status(HttpStatus.CREATED).location(URI.create("/api/jobs/" + saved.getJobId()))
@@ -57,22 +57,13 @@ public class JobController {
 	public ResponseEntity<Job> updateJob(@PathVariable Long id, @Valid @RequestBody Job newJob, BindingResult result) {
 		log.info("PUT /api/jobs/{} - Updating job", id);
 		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data Form");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		Job updated = jobService.updateJob(id, newJob);
 		return ResponseEntity.status(HttpStatus.OK).body(updated);
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<Job> patchJob(@PathVariable Long id, @Valid @RequestBody Job patch, BindingResult result) {
-		log.info("PATCH /api/jobs/{} - Patching job", id);
-		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data Form");
-		}
-		Job updated = jobService.patchJob(id, patch);
-		return ResponseEntity.status(HttpStatus.OK).body(updated);
-	}
-
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteJob(@PathVariable Long id) {
 		log.info("DELETE /api/jobs/{} - Deleting job", id);
