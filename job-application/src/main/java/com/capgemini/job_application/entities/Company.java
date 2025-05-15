@@ -2,12 +2,8 @@ package com.capgemini.job_application.entities;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "company")
@@ -18,16 +14,20 @@ public class Company {
 	@Column(name = "company_id")
 	private Long companyId;
 
-	@Column(name = "user_id")
+	@NotNull(message = "User ID is required")
+	@Column(name = "user_id", nullable = false)
 	private Long userId;
 
-	@Column(name = "company_name")
+	@NotBlank(message = "Company name is required")
+	@Column(name = "company_name", nullable = false, length = 100)
 	private String companyName;
 
-	@Column(name = "company_domain")
+	@NotBlank(message = "Company domain is required")
+	@Column(name = "company_domain", nullable = false, length = 100)
 	private String companyDomain;
 
-	@Column(name = "head_office")
+	@NotBlank(message = "Head office location is required")
+	@Column(name = "head_office", nullable = false, length = 100)
 	private String headOffice;
 
 	public Company() {
@@ -40,6 +40,8 @@ public class Company {
 		this.companyDomain = companyDomain;
 		this.headOffice = headOffice;
 	}
+
+	// Getters and Setters
 
 	public Long getCompanyId() {
 		return companyId;
@@ -96,14 +98,11 @@ public class Company {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if (obj == null || getClass() != obj.getClass())
 			return false;
 		Company other = (Company) obj;
 		return Objects.equals(companyDomain, other.companyDomain) && Objects.equals(companyId, other.companyId)
 				&& Objects.equals(companyName, other.companyName) && Objects.equals(headOffice, other.headOffice)
 				&& Objects.equals(userId, other.userId);
 	}
-
 }
