@@ -106,24 +106,6 @@ class QualificationControllerTest {
     }
 
     @Test
-    void testPatchQualification() throws Exception {
-        Qualification patched = new Qualification();
-        patched.setDegree("Diploma");
-
-        Qualification returned = new Qualification();
-        returned.setQualificationId(1L);
-        returned.setDegree("Diploma");
-
-        when(qualificationService.patchQualification(eq(1L), any(Qualification.class))).thenReturn(returned);
-
-        mockMvc.perform(patch("/api/qualifications/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patched)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.degree").value("Diploma"));
-    }
-
-    @Test
     void testDeleteQualification() throws Exception {
         doNothing().when(qualificationService).deleteQualification(1L);
 

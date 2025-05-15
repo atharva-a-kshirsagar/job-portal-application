@@ -9,27 +9,44 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name="qualification")
 public class Qualification {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	
+	@Column(name = "qualification_id")
 	private Long qualificationId;
 
+	@NotNull(message = "UserId must not be blank")
+	@Column(name = "user_id")
 	private Long userId;
 
+	@NotNull(message = "Start date must not be blank")
+	@Column(name = "start_date")
 	private LocalDate startDate;
 
+	@NotNull(message = "End date must not be blank")
+	@Column(name = "end_date")
 	private LocalDate endDate;
 
+	@NotBlank(message = "Qualification type must not be blank")
+	@Column(name = "qualification_type")
 	private String qualificationType;
 
+	@NotBlank(message = "Institute URL must not be blank")
+	@Column(name = "url")
 	private String url;
 
+	@NotBlank(message = "Institute Name must not be blank")
+	@Column(name = "institute")
 	private String institute;
 
+	@NotBlank(message = "Degree must not be blank")
+	@Column(name = "degree")
 	private String degree;
 
 	public Qualification(Long qualificationId, Long userId, LocalDate startDate, LocalDate endDate,
