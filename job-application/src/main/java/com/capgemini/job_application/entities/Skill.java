@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 @Entity
 @Table(name="skill")
 public class Skill {
@@ -18,6 +19,7 @@ public class Skill {
 	@Column(name="skill_id")
 	private Long skillId;
 	
+	@NotBlank(message = "Skill name must not be blank")
 	@Column(name ="skill_name")
 	private String skillName;
 	

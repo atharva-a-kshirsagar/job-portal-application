@@ -50,6 +50,18 @@ public class SkillControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.skillName").value("Java"));
     }
+    
+    @Test
+    void testCreateSkill_withInvalidSkillName_shouldReturnBadRequest() throws Exception {
+        Skill invalidSkill = new Skill(1L, ""); 
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/skills")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(invalidSkill)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.skillName").value("Skill name must not be blank"));
+    }
 
     @Test
     void testGetSkillById() throws Exception {
