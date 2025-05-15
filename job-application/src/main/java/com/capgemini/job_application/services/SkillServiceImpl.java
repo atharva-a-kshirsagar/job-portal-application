@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.capgemini.job_application.controllers.SkillController;
 import com.capgemini.job_application.entities.Skill;
+import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.repositories.SkillRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,7 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public Skill updateSkill(Long skillId, Skill skill) {
 
-		Skill skills = skillRepository.findById(skillId).orElseThrow(() -> new RuntimeException("Skill not found"));
+		Skill skills = skillRepository.findById(skillId).orElseThrow(() -> new SkillNotFoundException("Skill with ID " + skillId + " not found"));
 		skills.setSkillName(skill.getSkillName());
 		log.info("skill updated");
 		return skillRepository.save(skills);
