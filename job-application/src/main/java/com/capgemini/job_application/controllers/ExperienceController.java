@@ -52,7 +52,7 @@ public class ExperienceController {
 	public ResponseEntity<Experience> createExperience(@Valid @RequestBody Experience exp,BindingResult result){
 		if(result.hasErrors()) {
 			log.error("Found error to create expience"); 
-			throw new RuntimeException("Invalid data found");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		Experience experience = expService.createExperience(exp);
 		log.debug("Returning {} experience", experience); 
@@ -79,7 +79,7 @@ public class ExperienceController {
 	public ResponseEntity<Experience> updateExperience(@PathVariable Long expId,@PathVariable Long userId,@Valid @RequestBody Experience updatedExp,BindingResult result){
 		if(result.hasErrors()) {
 			log.error("Found error to update expience"); 
-			throw new RuntimeException("Invalid data found");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		log.info("Received request to update experience with user ID: {}", userId);
 		Experience experience = expService.updateExperience(expId, userId, updatedExp);

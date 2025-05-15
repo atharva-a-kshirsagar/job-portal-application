@@ -40,7 +40,7 @@ public class CompanyController {
 	public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company, BindingResult result) {
 		log.info("Received request to create company: {}", company);
 		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		Company saved = companyService.createCompany(company);
 		log.debug("Company created with ID: {}", saved.getCompanyId());
@@ -52,7 +52,7 @@ public class CompanyController {
 			BindingResult result) {
 		log.info("Received request to update company with ID: {}", id);
 		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		Company updated = companyService.updateCompany(id, company);
 		log.debug("Updated company: {}", updated);

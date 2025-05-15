@@ -28,7 +28,7 @@ public class User {
 
 	@Column(name = "user_email")
 	@NotBlank(message = "Email must not be blank.")
-	@Email(message = "{validatedValue} is not a valid email")
+	@Email(message = "Provided mail is not a valid email")
 	private String userEmail;
 
 	@Column(name = "phone")
