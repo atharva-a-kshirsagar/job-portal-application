@@ -65,7 +65,7 @@ class UserControllerTest {
                   "userName": "Alice",
                   "userEmail": "alice@example.com",
                   "phone": "1234567890",
-                  "password": "password",
+                  "password": "A@1password",
                   "address": "Address",
                   "userType": "USER",
                   "age": 25,
@@ -90,7 +90,7 @@ class UserControllerTest {
                   "userName": "Bob",
                   "userEmail": "bob@example.com",
                   "phone": "0987654321",
-                  "password": "newpass",
+                  "password": "newN@pass123",
                   "address": "New Address",
                   "userType": "ADMIN",
                   "age": 30,
@@ -104,6 +104,28 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
 
                 .andExpect(jsonPath("$.userName").value("Bob"));
+    }
+    
+    @Test
+    void createUser_shouldReturnBadRequestForInvalidPassword() throws Exception {
+        String invalidUserJson = """
+                {
+                  "userName": "Parikshit",
+                  "userEmail": "parikshit.jadhav@example.com",
+                  "phone": "1758385987",
+                  "password": "MySecure123",
+                  "address": "Pune",
+                  "userType": "applicant",
+                  "age": 25,
+                  "gender": "Male"
+                }
+                """;
+
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidUserJson))
+                .andExpect(status().isBadRequest());
+    
     }
 
     @Test
