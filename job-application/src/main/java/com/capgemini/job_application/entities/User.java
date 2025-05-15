@@ -1,5 +1,4 @@
 package com.capgemini.job_application.entities;
-
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -8,6 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user")
@@ -17,31 +21,44 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Long userId;
-	
+
 	@Column(name = "user_name")
+	@NotBlank(message = "UserName must not be blank.")
 	private String userName;
-	
+
 	@Column(name = "user_email")
+	@NotBlank(message = "Email must not be blank.")
+	@Email(message = "{validatedValue} is not a valid email")
 	private String userEmail;
-	
+
 	@Column(name = "phone")
+	@NotBlank(message = "Contact number must not be blank.")
 	private String phone;
 	
+	
 	@Column(name = "password")
+	@NotNull
+	@Pattern(
+	        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$",
+	        message = "Password must be 8-20 characters, include upper and lower case letters, a digit, and a special character"
+	 )
 	private String password;
 	
 	@Column(name = "address")
+	@NotBlank(message = "Address must not be blank.")
 	private String address;
 	
 	@Column(name = "user_type")
+	@NotNull(message = "User Type must not be blank.")
 	private String userType;
 	
 	@Column(name = "age")
+	@Min(value = 18, message = "Age must be at least 18")
 	private Integer age;
 	
+	@NotNull(message = "Gender must not be blank.")
 	@Column(name = "gender")
 	private String gender;
-	
 
 	public User(Long userId, String userName, String userEmail, String phone, String password, String address,
 			String userType, Integer age, String gender) {
@@ -161,3 +178,4 @@ public class User {
 				&& Objects.equals(userType, other.userType);
 	}
 }
+
