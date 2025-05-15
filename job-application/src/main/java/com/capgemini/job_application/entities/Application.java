@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "application")
@@ -21,15 +23,19 @@ public class Application{
 	private Long applicationId;
 	
 	@Column(name = "user_id")
+	@NotNull(message = "User ID is mandatory")
 	private Long userId;
 	
 	@Column(name = "job_id")
+	@NotNull(message = "Job ID is mandatory")
 	private Long jobId;
 	
 	@Column(name = "applied_date")
+	@NotNull(message = "Applied Date is mandatory")
 	private LocalDate appliedDate;
 	
 	@Column(name = "status")
+	@NotBlank(message = "Status is mandatory")
 	private String status;
 
 	public Application() {

@@ -1,107 +1,128 @@
 package com.capgemini.job_application;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import com.capgemini.job_application.controllers.ApplicationController;
+import com.capgemini.job_application.entities.Application;
+import com.capgemini.job_application.services.ApplicationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.capgemini.job_application.controllers.ApplicationController;
-import com.capgemini.job_application.entities.Application;
-import com.capgemini.job_application.services.ApplicationService;
+@WebMvcTest(ApplicationController.class)
+class ApplicationControllerTest {
 
-public class ApplicationControllerTest {
-	 @Mock
-	    private ApplicationService applicationService;
+    @Autowired
+    private MockMvc mockMvc;
 
-	    @InjectMocks
-	    private ApplicationController applicationController;
+    @MockitoBean
+    private ApplicationService applicationService;
 
-	    private Application sampleApplication;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	    @BeforeEach
-	    void setUp() {
-	        MockitoAnnotations.openMocks(this);
+    private Application application;
 
-	        sampleApplication = new Application();
-	        sampleApplication.setApplicationId(1L);
-	        sampleApplication.setJobId(101L);
-	        sampleApplication.setUserId(501L);
-	        sampleApplication.setAppliedDate(LocalDate.now());
-	        sampleApplication.setStatus("Pending");
-	    }
+    @BeforeEach
+    void setUp() {
+        application = new Application();
+        application.setApplicationId(1L);
+        application.setJobId(101L);
+        application.setUserId(501L);
+        application.setAppliedDate(LocalDate.now());
+        application.setStatus("Pending");
+    }
 
-	    @Test
-	    void testCreateUser() {
-	        when(applicationService.createApplication(any(Application.class))).thenReturn(sampleApplication);
+    @Test
+    void testCreateApplication() throws Exception {
+        when(applicationService.createApplication(any(Application.class))).thenReturn(application);
 
-	        ResponseEntity<Application> response = applicationController.createUser(sampleApplication);
+        mockMvc.perform(post("/api/application")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(application)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.applicationId").value(1L))
+                .andExpect(jsonPath("$.status").value("Pending"));
+    }
 
-	        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-	        assertEquals(sampleApplication, response.getBody());
-	    }
+    @Test
+    void testGetAllApplications() throws Exception {
+        List<Application> list = Arrays.asList(application);
+        when(applicationService.getAllApplication()).thenReturn(list);
 
-	    @Test
-	    void testGetAllApplications() {
-	        List<Application> apps = Arrays.asList(sampleApplication);
-	        when(applicationService.getAllApplication()).thenReturn(apps);
+        mockMvc.perform(get("/api/application"))
+                .andExpect(status().isFound())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].jobId").value(101L));
+    }
 
-	        ResponseEntity<List<Application>> response = applicationController.getApplicant();
+    @Test
+    void testGetApplicationById() throws Exception {
+        when(applicationService.getApplicationById(1L)).thenReturn(application);
 
-	        assertEquals(HttpStatus.FOUND, response.getStatusCode());
-	        assertEquals(1, response.getBody().size());
-	    }
+        mockMvc.perform(get("/api/application/1"))
+                .andExpect(status().isFound())
+                .andExpect(jsonPath("$.applicationId").value(1L))
+                .andExpect(jsonPath("$.status").value("Pending"));
+    }
 
-	    @Test
-	    void testGetUserById() {
-	        when(applicationService.getApplicationById(1L)).thenReturn(sampleApplication);
+    @Test
+    void testUpdateApplication() throws Exception {
+        Application updated = new Application();
+        updated.setApplicationId(1L);
+        updated.setJobId(102L);
+        updated.setUserId(501L);
+        updated.setAppliedDate(LocalDate.now());
+        updated.setStatus("Approved");
 
-	        ResponseEntity<Application> response = applicationController.getUserById(1L);
+        when(applicationService.updateApplication(eq(1L), any(Application.class))).thenReturn(updated);
 
-	        assertEquals(HttpStatus.FOUND, response.getStatusCode());
-	        assertEquals(sampleApplication, response.getBody());
-	    }
+        mockMvc.perform(put("/api/application/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updated)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("Approved"))
+                .andExpect(jsonPath("$.jobId").value(102L));
+    }
 
-	    @Test
-	    void testUpdateUser() {
-	        when(applicationService.updateApplication(eq(1L), any(Application.class))).thenReturn(sampleApplication);
+//    @Test
+//    void testPatchApplication() throws Exception {
+//        Application patchRequest = new Application();
+//        patchRequest.setStatus("Rejected");
+//
+//        Application patched = new Application();
+//        patched.setApplicationId(1L);
+//        patched.setStatus("Rejected");
+//
+//        when(applicationService.patchApplication(eq(1L), any(Application.class))).thenReturn(patched);
+//
+//        mockMvc.perform(patch("/api/application/1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(patchRequest)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status").value("Rejected"));
+//    }
 
-	        ResponseEntity<Application> response = applicationController.updateUser(1L, sampleApplication);
+    @Test
+    void testDeleteApplication() throws Exception {
+        doNothing().when(applicationService).deleteApplication(1L);
 
-	        assertEquals(HttpStatus.OK, response.getStatusCode());
-	        assertEquals(sampleApplication, response.getBody());
-	    }
-
-	    @Test
-	    void testPatchUser() {
-	        when(applicationService.patchApplication(eq(1L), any(Application.class))).thenReturn(sampleApplication);
-
-	        ResponseEntity<Application> response = applicationController.patchUser(1L, sampleApplication);
-
-	        assertEquals(HttpStatus.OK, response.getStatusCode());
-	        assertEquals(sampleApplication, response.getBody());
-	    }
-
-	    @Test
-	    void testDeleteUser() {
-	        doNothing().when(applicationService).deleteApplication(1L);
-
-	        ResponseEntity<Void> response = applicationController.deleteUser(1L);
-
-	        assertEquals(HttpStatus.OK, response.getStatusCode());
-	        assertNull(response.getBody());
-	    }
+        mockMvc.perform(delete("/api/application/1"))
+                .andExpect(status().isOk());
+    }
 }

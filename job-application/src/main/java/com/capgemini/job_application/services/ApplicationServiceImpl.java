@@ -8,76 +8,91 @@ import org.springframework.stereotype.Service;
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.repositories.ApplicationRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
-	ApplicationRepository applicationRepository;
-	
-	@Autowired
-	public ApplicationServiceImpl(ApplicationRepository applicationRepository) {
-		super();
-		this.applicationRepository = applicationRepository;
-	}
+    private final ApplicationRepository applicationRepository;
 
-	@Override
-	public List<Application> getAllApplication() {
-		// TODO Auto-generated method stub
-		return applicationRepository.findAll();
-	}
+    @Autowired
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository) {
+        this.applicationRepository = applicationRepository;
+    }
 
-	@Override
-	public Application getApplicationById(Long id) {
-		// TODO Auto-generated method stub
-		return applicationRepository.findById(id).orElseThrow(() -> new RuntimeException("Applicant not Found with id : " + id));
-	}
+    @Override
+    public List<Application> getAllApplication() {
+        log.info("Fetching all applications");
+        return applicationRepository.findAll();
+    }
 
-	@Override
-	public Application createApplication(Application applicant) {
-		// TODO Auto-generated method stub
-		return applicationRepository.save(applicant);
-	}
+    @Override
+    public Application getApplicationById(Long id) {
+        log.info("Fetching application with ID: {}", id);
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Application not found with ID: {}", id);
+                    return new RuntimeException("Applicant not found with ID: " + id);
+                });
+    }
 
-	@Override
-	public Application updateApplication(Long id, Application applicant) {
-		// TODO Auto-generated method stub
-		Application existing = applicationRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("User not Found with id : " + id));
-		existing.setJobId(applicant.getJobId());
-		existing.setAppliedDate(applicant.getAppliedDate());
-		existing.setStatus(applicant.getStatus());
-		existing.setUserId(applicant.getUserId());
-		return applicationRepository.save(existing);
-	}
+    @Override
+    public Application createApplication(Application applicant) {
+        log.info("Creating application for userId: {}", applicant.getUserId());
+        return applicationRepository.save(applicant);
+    }
 
-	@Override
-	public Application patchApplication(Long id, Application applicant) {
-		// TODO Auto-generated method stub
-		Application existing = applicationRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("User not Found with id : " + id));
+    @Override
+    public Application updateApplication(Long id, Application applicant) {
+        log.info("Updating application with ID: {}", id);
+        Application existing = applicationRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Application not found with ID: {}", id);
+                    return new RuntimeException("User not found with ID: " + id);
+                });
 
-		if (applicant.getJobId() != null) {
-			existing.setJobId(applicant.getJobId());
-		}
-		if (applicant.getAppliedDate() != null) {
-			existing.setAppliedDate(applicant.getAppliedDate());
-		}
-		if (applicant.getStatus() != null) {
-			existing.setStatus(applicant.getStatus());
-		}
-		if (applicant.getUserId() != null) {
-			existing.setUserId(applicant.getUserId());
-		} 
+        existing.setJobId(applicant.getJobId());
+        existing.setAppliedDate(applicant.getAppliedDate());
+        existing.setStatus(applicant.getStatus());
+        existing.setUserId(applicant.getUserId());
 
-		return applicationRepository.save(existing);
-	}
+        return applicationRepository.save(existing);
+    }
 
-	@Override
-	public void deleteApplication(Long id) {
-		// TODO Auto-generated method stub
-		if (!applicationRepository.existsById(id)) {
-			throw new RuntimeException("Applicant not Found with id : " + id);
-		}
-		applicationRepository.deleteById(id);
-	}
-	
+    @Override
+    public Application patchApplication(Long id, Application applicant) {
+        log.info("Patching application with ID: {}", id);
+        Application existing = applicationRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Application not found with ID: {}", id);
+                    return new RuntimeException("User not found with ID: " + id);
+                });
+
+        if (applicant.getJobId() != null) {
+            existing.setJobId(applicant.getJobId());
+        }
+        if (applicant.getAppliedDate() != null) {
+            existing.setAppliedDate(applicant.getAppliedDate());
+        }
+        if (applicant.getStatus() != null) {
+            existing.setStatus(applicant.getStatus());
+        }
+        if (applicant.getUserId() != null) {
+            existing.setUserId(applicant.getUserId());
+        }
+
+        return applicationRepository.save(existing);
+    }
+
+    @Override
+    public void deleteApplication(Long id) {
+        log.info("Deleting application with ID: {}", id);
+        if (!applicationRepository.existsById(id)) {
+            log.error("Cannot delete. Application not found with ID: {}", id);
+            throw new RuntimeException("Applicant not found with ID: " + id);
+        }
+        applicationRepository.deleteById(id);
+        log.info("Application deleted with ID: {}", id);
+    }
 }
