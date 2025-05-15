@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.capgemini.job_application.entities.Experience;
 
 @Service
+
 public interface ExperienceService {
 	List<Experience> getExperienceByUser_id(Long user_id);
     Experience createExperience(Experience experience);
