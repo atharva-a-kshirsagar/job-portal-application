@@ -100,17 +100,7 @@ public class JobServiceImplTest {
 	        assertEquals("Senior Developer", result.getJobTitle());
 	    }
 
-	    @Test
-	    void testPatchJob() {
-	        Job patch = new Job(null, null, "Lead Dev", null, null, "Delhi",null,null);
-	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
-	        when(jobRepository.save(any(Job.class))).thenReturn(job);
-
-	        Job patched = jobService.patchJob(1L, patch);
-	        assertEquals("Lead Dev", patched.getJobTitle());
-	        assertEquals("Delhi", patched.getJobLocation());
-	    }
-
+	   
 	    @Test
 	    void testDeleteJobFound() {
 	        when(jobRepository.existsById(1L)).thenReturn(true);

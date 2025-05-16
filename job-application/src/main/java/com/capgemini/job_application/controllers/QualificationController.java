@@ -66,7 +66,7 @@ public class QualificationController {
 	public ResponseEntity<Qualification> updateQualification(@PathVariable Long id,
 			@Valid @RequestBody Qualification qualification, BindingResult result) {
 		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data Found");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		log.info("Qualification with ID {} successfully updated", id);
 		return ResponseEntity.status(HttpStatus.OK).body(qualificationService.updateQualification(id, qualification));
