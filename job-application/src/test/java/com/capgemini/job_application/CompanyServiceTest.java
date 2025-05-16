@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.capgemini.job_application.entities.Company;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.repositories.CompanyRepository;
 import com.capgemini.job_application.services.CompanyServiceImpl;
 
@@ -30,8 +31,12 @@ public class CompanyServiceTest {
 	@Test
 	@DisplayName("Should return all companies")
 	void shouldReturnAllCompanies() {
-		Company company1 = new Company(1L, 10L, "ABC Corp", "Tech", "Pune");
-		Company company2 = new Company(2L, 11L, "XYZ Inc", "Finance", "Mumbai");
+		User user1=new User();
+		user1.setUserId(10L);
+		User user2=new User();
+		user2.setUserId(11L);
+		Company company1 = new Company(1L, user1, "ABC Corp", "Tech", "Pune");
+		Company company2 = new Company(2L, user2, "XYZ Inc", "Finance", "Mumbai");
 
 		Mockito.when(companyRepository.findAll()).thenReturn(Arrays.asList(company1, company2));
 
@@ -44,7 +49,9 @@ public class CompanyServiceTest {
 	@Test
 	@DisplayName("Should return company by ID")
 	void shouldReturnCompanyById() {
-		Company company = new Company(1L, 10L, "ABC Corp", "Tech", "Pune");
+		User user=new User();
+		user.setUserId(10L);
+		Company company = new Company(1L, user, "ABC Corp", "Tech", "Pune");
 		Mockito.when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
 
 		Company found = companyService.getCompanyById(1L);
@@ -56,7 +63,9 @@ public class CompanyServiceTest {
 	@Test
 	@DisplayName("Should create a company")
 	void shouldCreateCompany() {
-		Company company = new Company(1L, 10L, "ABC Corp", "Tech", "Pune");
+		User user=new User();
+		user.setUserId(10L);
+		Company company = new Company(1L, user, "ABC Corp", "Tech", "Pune");
 		Mockito.when(companyRepository.save(company)).thenReturn(company);
 
 		Company saved = companyService.createCompany(company);
@@ -67,8 +76,12 @@ public class CompanyServiceTest {
 	@Test
 	@DisplayName("Should update a company")
 	void shouldUpdateCompany() {
-		Company old = new Company(1L, 10L, "OldName", "OldDomain", "OldOffice");
-		Company updated = new Company(1L, 20L, "NewName", "NewDomain", "NewOffice");
+		User user1=new User();
+		user1.setUserId(10L);
+		User user2=new User();
+		user2.setUserId(20L);
+		Company old = new Company(1L, user1, "OldName", "OldDomain", "OldOffice");
+		Company updated = new Company(1L, user2, "NewName", "NewDomain", "NewOffice");
 
 		Mockito.when(companyRepository.findById(1L)).thenReturn(Optional.of(old));
 		Mockito.when(companyRepository.save(Mockito.any())).thenReturn(updated);

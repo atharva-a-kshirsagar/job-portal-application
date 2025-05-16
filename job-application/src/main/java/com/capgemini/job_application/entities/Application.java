@@ -3,12 +3,20 @@ package com.capgemini.job_application.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,13 +30,7 @@ public class Application{
 	@Column(name = "application_id")
 	private Long applicationId;
 	
-	@Column(name = "user_id")
-	@NotNull(message = "User ID is mandatory")
-	private Long userId;
-	
-	@Column(name = "job_id")
-	@NotNull(message = "Job ID is mandatory")
-	private Long jobId;
+
 	
 	@Column(name = "applied_date")
 	@NotNull(message = "Applied Date is mandatory")
@@ -37,16 +39,29 @@ public class Application{
 	@Column(name = "status")
 	@NotBlank(message = "Status is mandatory")
 	private String status;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@JsonBackReference(value = "user-application")
+	private User user;
 
+	@ManyToOne
+	@JoinColumn(name = "job_id")
+	@JsonBackReference(value = "job-application")
+	private Job job;
+
+
+	
 	public Application() {
 		super();
 	}
 
-	public Application(Long applicationId, Long userId, Long jobId, LocalDate appliedDate, String status) {
+	public Application(Long applicationId, User user, Job job, LocalDate appliedDate, String status) {
 		super();
 		this.applicationId = applicationId;
-		this.userId = userId;
-		this.jobId = jobId;
+		this.user = user;
+		this.job = job;
 		this.appliedDate = appliedDate;
 		this.status = status;
 	}
@@ -59,20 +74,20 @@ public class Application{
 		this.applicationId = applicationId;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public Long getJobId() {
-		return jobId;
+	public Job getJob() {
+		return job;
 	}
 
-	public void setJobId(Long jobId) {
-		this.jobId = jobId;
+	public void setJob(Job job) {
+		this.job = job;
 	}
 
 	public LocalDate getAppliedDate() {
@@ -93,7 +108,7 @@ public class Application{
 
 	@Override
 	public String toString() {
-		return "Application [applicationId=" + applicationId + ", userId=" + userId + ", jobId=" + jobId
+		return "Application [applicationId=" + applicationId + ", jobId=" + job
 				+ ", appliedDate=" + appliedDate + ", status=" + status + "]";
 	}
 

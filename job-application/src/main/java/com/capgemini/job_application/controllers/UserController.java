@@ -1,10 +1,12 @@
 package com.capgemini.job_application.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("api/users")
 @Slf4j 
+//@PreAuthorize("hasRole('USER') or hasRole('COMPANY')")
 public class UserController {
 	private UserService userService;
 
@@ -79,6 +82,12 @@ public class UserController {
         log.info("User with ID {} successfully deleted", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+	
+	@PostMapping("/{userId}/addSkill")
+	public ResponseEntity<User> setUserSkill(@PathVariable Long userId, @RequestBody Map<String, Long> body) {
+	    Long skillId = body.get("skillId");
+	    return ResponseEntity.ok(userService.setUserSkill(userId, skillId));
+	}
 	
 	
 }

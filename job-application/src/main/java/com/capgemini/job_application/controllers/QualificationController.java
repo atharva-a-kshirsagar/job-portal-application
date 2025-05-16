@@ -54,7 +54,7 @@ public class QualificationController {
 	public ResponseEntity<Qualification> createQualification(@Valid @RequestBody Qualification qualification,
 			BindingResult result) {
 		if (result.hasErrors()) {
-			throw new IllegalArgumentException("Invalid Data Found");
+			throw new IllegalArgumentException(result.getFieldErrors().toString());
 		}
 		log.info("Received request to create qualification: {}", qualification);
 		Qualification savedQualification = qualificationService.createQualification(qualification);

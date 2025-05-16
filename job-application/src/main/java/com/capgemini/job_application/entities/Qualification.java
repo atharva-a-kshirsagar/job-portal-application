@@ -3,11 +3,17 @@ package com.capgemini.job_application.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,9 +27,9 @@ public class Qualification {
 	@Column(name = "qualification_id")
 	private Long qualificationId;
 
-	@NotNull(message = "UserId must not be blank")
-	@Column(name = "user_id")
-	private Long userId;
+//	@NotNull(message = "UserId must not be blank")
+//	@Column(name = "user_id")
+//	private Long userId;
 
 	@NotNull(message = "Start date must not be blank")
 	@Column(name = "start_date")
@@ -48,12 +54,18 @@ public class Qualification {
 	@NotBlank(message = "Degree must not be blank")
 	@Column(name = "degree")
 	private String degree;
+	
+//	@NotNull(message = "UserId must not be blank")
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	@JsonBackReference(value = "user-qualification")
+	private User user;
 
-	public Qualification(Long qualificationId, Long userId, LocalDate startDate, LocalDate endDate,
+	public Qualification(Long qualificationId, User user, LocalDate startDate, LocalDate endDate,
 			String qualificationType, String url, String institute, String degree) {
 		super();
 		this.qualificationId = qualificationId;
-		this.userId = userId;
+		this.user = user;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.qualificationType = qualificationType;
@@ -74,12 +86,12 @@ public class Qualification {
 		this.qualificationId = qualificationId;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public LocalDate getStartDate() {
@@ -132,30 +144,27 @@ public class Qualification {
 
 	@Override
 	public String toString() {
-		return "Qualification [qualificationId=" + qualificationId + ", userId=" + userId + ", startDate=" + startDate
+		return "Qualification [qualificationId=" + qualificationId +", startDate=" + startDate
 				+ ", endDate=" + endDate + ", qualificationType=" + qualificationType + ", url=" + url + ", institute="
 				+ institute + ", degree=" + degree + "]";
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(degree, endDate, institute, qualificationId, qualificationType, startDate, url, userId);
+	public Qualification(Long qualificationId, @NotNull(message = "Start date must not be blank") LocalDate startDate,
+			@NotNull(message = "End date must not be blank") LocalDate endDate,
+			@NotBlank(message = "Qualification type must not be blank") String qualificationType,
+			@NotBlank(message = "Institute URL must not be blank") String url,
+			@NotBlank(message = "Institute Name must not be blank") String institute,
+			@NotBlank(message = "Degree must not be blank") String degree) {
+		super();
+		this.qualificationId = qualificationId;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.qualificationType = qualificationType;
+		this.url = url;
+		this.institute = institute;
+		this.degree = degree;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Qualification other = (Qualification) obj;
-		return Objects.equals(degree, other.degree) && Objects.equals(endDate, other.endDate)
-				&& Objects.equals(institute, other.institute) && Objects.equals(qualificationId, other.qualificationId)
-				&& Objects.equals(qualificationType, other.qualificationType)
-				&& Objects.equals(startDate, other.startDate) && Objects.equals(url, other.url)
-				&& Objects.equals(userId, other.userId);
-	}
+	
 
 }

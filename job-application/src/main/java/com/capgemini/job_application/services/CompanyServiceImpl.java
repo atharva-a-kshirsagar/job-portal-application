@@ -41,7 +41,7 @@ public class CompanyServiceImpl implements CompanyService {
 		log.debug("Updating company with ID: {}", id);
 		Company existing = getCompanyById(id);
 		existing.setCompanyName(company.getCompanyName());
-		existing.setUserId(company.getUserId());
+		existing.setUser(company.getUser());
 		existing.setCompanyDomain(company.getCompanyDomain());
 		existing.setHeadOffice(company.getHeadOffice());
 		Company updated = companyRepository.save(existing);
@@ -57,9 +57,9 @@ public class CompanyServiceImpl implements CompanyService {
 			log.debug("Updating company name to: {}", company.getCompanyName());
 			existing.setCompanyName(company.getCompanyName());
 		}
-		if (company.getUserId() != null) {
-			log.debug("Updating user ID to: {}", company.getUserId());
-			existing.setUserId(company.getUserId());
+		if (company.getUser() != null) {
+			log.debug("Updating user ID to: {}", company.getUser());
+			existing.setUser(company.getUser());
 		}
 		if (company.getCompanyDomain() != null) {
 			log.debug("Updating domain to: {}", company.getCompanyDomain());

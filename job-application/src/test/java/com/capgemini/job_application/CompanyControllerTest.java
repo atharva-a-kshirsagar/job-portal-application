@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.capgemini.job_application.controllers.CompanyController;
 import com.capgemini.job_application.entities.Company;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.CompanyService;
 
 import java.util.List;
@@ -32,7 +33,9 @@ public class CompanyControllerTest {
 	@Test
 	@DisplayName("Should create a new company")
 	void shouldCreateCompany() throws Exception {
-		Company company = new Company(1L, 100L, "Capgemini", "IT", "Pune");
+		User user=new User();
+		user.setUserId(100L);
+		Company company = new Company(1L, user, "Capgemini", "IT", "Pune");
 
 		Mockito.when(companyService.createCompany(Mockito.any())).thenReturn(company);
 
@@ -46,7 +49,9 @@ public class CompanyControllerTest {
 	@Test
 	@DisplayName("Should get company by ID")
 	void shouldGetCompanyById() throws Exception {
-		Company company = new Company(1L, 101L, "Infosys", "IT", "Bangalore");
+		User user=new User();
+		user.setUserId(101L);
+		Company company = new Company(1L, user, "Infosys", "IT", "Bangalore");
 
 		Mockito.when(companyService.getCompanyById(1L)).thenReturn(company);
 
@@ -58,8 +63,12 @@ public class CompanyControllerTest {
 	@Test
 	@DisplayName("Should return all companies")
 	void shouldGetAllCompanies() throws Exception {
-		Company c1 = new Company(1L, 1L, "A", "X", "Y");
-		Company c2 = new Company(2L, 2L, "B", "Y", "Z");
+		User user1=new User();
+		user1.setUserId(1L);
+		User user2=new User();
+		user2.setUserId(2L);
+		Company c1 = new Company(1L, user1, "A", "X", "Y");
+		Company c2 = new Company(2L, user2, "B", "Y", "Z");
 
 		Mockito.when(companyService.getAllCompanies()).thenReturn(List.of(c1, c2));
 
@@ -71,7 +80,9 @@ public class CompanyControllerTest {
 	@Test
 	@DisplayName("Should update company with PUT")
 	void shouldUpdateCompany() throws Exception {
-		Company updated = new Company(1L, 200L, "UpdatedCo", "NewDomain", "NewHQ");
+		User user=new User();
+		user.setUserId(200L);
+		Company updated = new Company(1L, user, "UpdatedCo", "NewDomain", "NewHQ");
 
 		Mockito.when(companyService.updateCompany(Mockito.eq(1L), Mockito.any())).thenReturn(updated);
 

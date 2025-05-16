@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.job_application.entities.Experience;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.repositories.ExperienceRepository;
+import com.capgemini.job_application.repositories.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,16 +16,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExperienceServiceImpl implements ExperienceService {
 	ExperienceRepository expRepo;
+	UserRepository userRepository;
 
 	@Autowired
-	public ExperienceServiceImpl(ExperienceRepository expRepo) {
+	public ExperienceServiceImpl(ExperienceRepository expRepo, UserRepository userRepository) {
 		super();
 		this.expRepo = expRepo;
+		this.userRepository =userRepository;
 	}
 
 	@Override
-	public List<Experience> getExperienceByUser_id(Long userId) {
+	public List<Experience> getExperienceByUserId(Long userId) {
         log.info("Fetching all experiences for user ID: {}", userId);
+        
         List<Experience> experiences = expRepo.findByUserId(userId);
         log.debug("Found {} experiences for user ID: {}", experiences.size(), userId);
         return experiences;
@@ -31,10 +36,26 @@ public class ExperienceServiceImpl implements ExperienceService {
 
 	@Override
 	public Experience createExperience(Experience experience) {
-        log.info("Creating new experience for user ID: {}", experience.getUserId());
-        Experience savedExperience = expRepo.save(experience);
-        log.debug("Experience created with ID: {}", savedExperience.getExperienceId());
-        return savedExperience;
+//		System.out.println("USER INSIDE EXPERIENCE: " + experience.getUser());
+//		System.out.println("USER ID: " + (experience.getUser() != null ? experience.getUser().getUserId() : "null"));
+//		
+//        log.info("Creating new experience for user ID: {}", experience.getUser());
+//        Experience savedExperience = expRepo.save(experience);
+//        log.debug("Experience created with ID: {}", savedExperience.getExperienceId());
+//        return savedExperience;
+		log.info("Creating new experience for user ID: {}", experience.getUser());
+
+	    // Fix: Fetch the managed user entity
+	    Long userId = experience.getUser().getUserId();
+	    User existingUser = userRepository.findById(userId)
+	        .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+	    // Set the managed user
+	    experience.setUser(existingUser);
+
+	    Experience savedExperience = expRepo.save(experience);
+	    log.debug("Experience created with ID: {}", savedExperience.getExperienceId());
+	    return savedExperience;
     }
 
 	@Override
@@ -47,7 +68,10 @@ public class ExperienceServiceImpl implements ExperienceService {
 	@Override
 	public void deleteAllExperiencesByUserId(Long userId) {
         log.info("Deleting all experiences for user ID: {}", userId);
-        expRepo.deleteByUserId(userId);
+        //expRepo.deleteByUserId(userId);
+        List<Experience> experiences = expRepo.findByUserId(userId);
+        expRepo.deleteAll(experiences);
+      // Experience exp = expRepo.findById(userId).orElseThrow();
         log.debug("All experiences for user ID {} deleted", userId);
     }
 

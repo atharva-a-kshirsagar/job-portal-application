@@ -31,7 +31,7 @@ public class SkillController {
    			
     	if(result.hasErrors()) {
     		log.error("Error found in create skill. invalid data");
-    		throw new IllegalArgumentException("Invalid Data Found!!");
+    		throw new IllegalArgumentException(result.getAllErrors().toString());
     	}
     	log.info("New Skill Created");
    		

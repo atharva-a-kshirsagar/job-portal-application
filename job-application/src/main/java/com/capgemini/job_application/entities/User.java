@@ -1,11 +1,24 @@
 package com.capgemini.job_application.entities;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -34,31 +47,52 @@ public class User {
 	@Column(name = "phone")
 	@NotBlank(message = "Contact number must not be blank.")
 	private String phone;
-	
-	
+
 	@Column(name = "password")
 	@NotNull
-	@Pattern(
-	        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$",
-	        message = "Password must be 8-20 characters, include upper and lower case letters, a digit, and a special character"
-	 )
+//	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$", message = "Password must be 8-20 characters, include upper and lower case letters, a digit, and a special character")
 	private String password;
-	
+
 	@Column(name = "address")
 	@NotBlank(message = "Address must not be blank.")
 	private String address;
-	
+
 	@Column(name = "user_type")
 	@NotNull(message = "User Type must not be blank.")
 	private String userType;
-	
+
 	@Column(name = "age")
 	@Min(value = 18, message = "Age must be at least 18")
 	private Integer age;
-	
+
 	@NotNull(message = "Gender must not be blank.")
 	@Column(name = "gender")
 	private String gender;
+
+	// Realtions :
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference(value = "user-experience")
+	private List<Experience> experiences;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference(value = "user-qualification")
+	private List<Qualification> qualifications;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference(value = "user-application")
+	private List<Application> applications;
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference(value = "user-company")
+	private Company company;
+
+
+	@ManyToMany
+	@JoinTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+//	@JsonManagedReference(value = "user-skill")
+	private List<Skill> skills;
+
 
 	public User(Long userId, String userName, String userEmail, String phone, String password, String address,
 			String userType, Integer age, String gender) {
@@ -73,6 +107,33 @@ public class User {
 		this.age = age;
 		this.gender = gender;
 	}
+	
+
+	public User(Long userId, @NotBlank(message = "UserName must not be blank.") String userName,
+			@NotBlank(message = "Email must not be blank.") @Email(message = "{validatedValue} is not a valid email") String userEmail,
+			@NotBlank(message = "Contact number must not be blank.") String phone, @NotNull String password,
+			@NotBlank(message = "Address must not be blank.") String address,
+			@NotNull(message = "User Type must not be blank.") String userType,
+			@Min(value = 18, message = "Age must be at least 18") Integer age,
+			@NotNull(message = "Gender must not be blank.") String gender, List<Qualification> qualifications,
+			List<Experience> experiences, List<Application> applications, Company company, List<Skill> skills) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.userEmail = userEmail;
+		this.phone = phone;
+		this.password = password;
+		this.address = address;
+		this.userType = userType;
+		this.age = age;
+		this.gender = gender;
+		this.qualifications = qualifications;
+		this.experiences = experiences;
+		this.applications = applications;
+		this.company = company;
+		this.skills = skills;
+	}
+
 
 	public User() {
 		super();
@@ -149,33 +210,33 @@ public class User {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	
+	public List<Skill> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<Skill> skills) {
+		this.skills = skills;
+	}
 
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", phone=" + phone
 				+ ", password=" + password + ", address=" + address + ", userType=" + userType + ", age=" + age
-				+ ", gender=" + gender + "]";
+				+ ", gender=" + gender;
+	}
+//, qualification: "+qualifications +", experience : "+experiences +", applications: "+applications+", skills"+skills+ "
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return Objects.equals(userId, user.userId);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, age, gender, password, phone, userEmail, userId, userName, userType);
+		return Objects.hash(userId);
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(address, other.address) && Objects.equals(age, other.age)
-				&& Objects.equals(gender, other.gender) && Objects.equals(password, other.password)
-				&& Objects.equals(phone, other.phone) && Objects.equals(userEmail, other.userEmail)
-				&& Objects.equals(userId, other.userId) && Objects.equals(userName, other.userName)
-				&& Objects.equals(userType, other.userType);
-	}
 }
-

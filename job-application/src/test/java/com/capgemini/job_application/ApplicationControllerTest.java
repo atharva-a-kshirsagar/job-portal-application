@@ -2,6 +2,8 @@ package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.ApplicationController;
 import com.capgemini.job_application.entities.Application;
+import com.capgemini.job_application.entities.Job;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.ApplicationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,13 +39,19 @@ class ApplicationControllerTest {
     private ObjectMapper objectMapper;
 
     private Application application;
+    
+    private Job job;
 
     @BeforeEach
     void setUp() {
+    	User user=new User();
+    	user.setUserId(101L);
+    	Job job=new Job();
+    	job.setJobId(101L);
         application = new Application();
         application.setApplicationId(1L);
-        application.setJobId(101L);
-        application.setUserId(501L);
+        application.setJob(job);
+        application.setUser(user);
         application.setAppliedDate(LocalDate.now());
         application.setStatus("Pending");
     }
@@ -83,10 +91,14 @@ class ApplicationControllerTest {
 
     @Test
     void testUpdateApplication() throws Exception {
+    	User user=new User();
+    	user.setUserId(501L);
+    	Job job=new Job();
+    	job.setJobId(102L);
         Application updated = new Application();
         updated.setApplicationId(1L);
-        updated.setJobId(102L);
-        updated.setUserId(501L);
+        updated.setJob(job);
+        updated.setUser(user);
         updated.setAppliedDate(LocalDate.now());
         updated.setStatus("Approved");
 

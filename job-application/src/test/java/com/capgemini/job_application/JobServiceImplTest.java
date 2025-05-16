@@ -1,6 +1,7 @@
 package com.capgemini.job_application;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,8 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.capgemini.job_application.entities.Job;
+import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.repositories.JobRepository;
 import com.capgemini.job_application.services.JobServiceImpl;
 
@@ -34,11 +37,23 @@ public class JobServiceImplTest {
 	    private JobServiceImpl jobService;
 
 	    private Job job;
+	    private Company company;
+	    
+	    @Autowired
+	    public JobServiceImplTest(JobRepository jobRepository, JobServiceImpl jobService, Job job,Company company) {
+			super();
+			this.jobRepository = jobRepository;
+			this.jobService = jobService;
+			this.job = job;
+			this.company=company;
+		}
 
-	    @BeforeEach
+		@BeforeEach
 	    void setUp() {
 	        MockitoAnnotations.openMocks(this);
-	        job = new Job(1L, 101L, "Developer", 80000.0,"Java Job", "Bangalore",LocalDate.of(2025, 6, 30),LocalDate.of(2025, 6, 30));
+	        Company company=new Company();
+	        company.setCompanyId(100L);
+	        job = new Job(1L, company, "Developer", 80000.0,"Java Job", "Bangalore",LocalDate.of(2025, 6, 30),LocalDate.of(2025, 6, 30));
 	    }
 
 	    @Test
@@ -75,7 +90,9 @@ public class JobServiceImplTest {
 
 	    @Test
 	    void testUpdateJob() {
-	        Job updated = new Job(1L, 102L, "Senior Developer", 90000.0,"Updated", "Mumbai",LocalDate.of(2025, 6, 30),LocalDate.of(2025, 6, 30));
+	    	Company company=new Company();
+	        company.setCompanyId(102L);
+	        Job updated = new Job(1L, company, "Senior Developer", 90000.0,"Updated", "Mumbai",LocalDate.of(2025, 6, 30),LocalDate.of(2025, 6, 30));
 	        when(jobRepository.findById(1L)).thenReturn(Optional.of(job));
 	        when(jobRepository.save(any(Job.class))).thenReturn(updated);
 

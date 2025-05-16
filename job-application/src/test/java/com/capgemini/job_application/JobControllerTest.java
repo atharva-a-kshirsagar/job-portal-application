@@ -1,6 +1,7 @@
 package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.JobController;
+import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.services.JobService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,11 +37,14 @@ public class JobControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    private Company company;
 
     private Job createSampleJob(Long id) {
+    	Company company=new Company();
+    	company.setCompanyId(100L);
         return new Job(
                 id,
-                100L,
+                company,
                 "Java Developer",
                 80000.0,
                 "Develop Java applications",

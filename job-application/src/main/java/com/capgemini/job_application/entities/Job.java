@@ -1,12 +1,23 @@
 package com.capgemini.job_application.entities;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -25,9 +36,11 @@ public class Job {
 	@Column(name = "job_id")
 	private Long jobId;
 
-	@NotNull(message ="Company ID is required")
-	@Column(name = "company_id")
-	private Long companyId;
+//	@NotNull(message ="Company ID is required")
+	@ManyToOne
+	@JoinColumn(name="company_id" , referencedColumnName = "company_id")
+	@JsonBackReference(value = "company-job")
+	private Company company;
 
 	@NotBlank(message ="Job Title is required")
 	@Column(name = "job_title")
@@ -54,11 +67,16 @@ public class Job {
 	@Future(message = "Deadline date must be in the future")
 	@Column(name = "deadline_date")
 	private LocalDate deadlineDate;
+	
+	@OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference(value = "job-application")
+	private List<Application> applications;
+ 
 
 	public Job() {
 	}
 
-	public Job(Long jobId, @NotNull(message = "Company ID is required") Long companyId,
+	public Job(Long jobId, @NotNull(message = "Company ID is required") Company company,
 			@NotBlank(message = "Job Title is required") String jobTitle,
 			@NotNull(message = "Salary is required") @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be greater than 0") Double salary,
 			@NotBlank(message = "Description is required") @Size(min = 10, message = "Description must be at least 10 characters") String description,
@@ -66,7 +84,7 @@ public class Job {
 			@PastOrPresent(message = "Posting date cannot be in the future") LocalDate postingDate,
 			@Future(message = "Deadline date must be in the future") LocalDate deadlineDate) {
 		this.jobId = jobId;
-		this.companyId = companyId;
+		this.company = company;
 		this.jobTitle = jobTitle;
 		this.salary = salary;
 		this.description = description;
@@ -83,12 +101,13 @@ public class Job {
 		this.jobId = jobId;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
+
+	public Company getCompany() {
+		return company;
 	}
 
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	public String getJobTitle() {
@@ -141,9 +160,23 @@ public class Job {
 
 	@Override
 	public String toString() {
-		return "Job [jobId=" + jobId + ", companyId=" + companyId + ", jobTitle=" + jobTitle + ", salary=" + salary
+		return "Job [jobId=" + jobId + ", jobTitle=" + jobTitle + ", salary=" + salary
 				+ ", description=" + description + ", jobLocation=" + jobLocation + ", postingDate=" + postingDate
 				+ ", deadlineDate=" + deadlineDate + "]";
+	}
+	
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Job job = (Job) o;
+		return Objects.equals(jobId, job.jobId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(jobId);
 	}
 
 	

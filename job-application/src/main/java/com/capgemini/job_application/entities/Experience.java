@@ -3,6 +3,10 @@ package com.capgemini.job_application.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,9 +22,9 @@ public class Experience {
 	@Column(name = "experience_id")
 	private Long experienceId;
 
-	@NotNull(message = "User id is mandatory")
-	@Column(name = "user_id")
-	private Long userId;
+//	@NotNull(message = "User id is mandatory")
+//	@Column(name = "user_id")
+//	private Long userId;
 
 	@NotBlank(message = "Role is mandatory")
 	@Column(name = "role")
@@ -37,10 +41,18 @@ public class Experience {
 	@NotNull(message = "Date of end must be provided")
 	@Column(name = "end_date")
 	private LocalDate endDate;
+	
+//	@NotNull(message = "User id is mandatory")
+	@ManyToOne
+	@JoinColumn(name="user_id" ,referencedColumnName = "user_id")
+	@JsonBackReference(value="user-experience")
+	private User user;
+	
+	
 
-	public Experience(Long experienceId, Long userId, String role, String companyName, LocalDate startDate, LocalDate endDate) {
+	public Experience(Long experienceId, User user, String role, String companyName, LocalDate startDate, LocalDate endDate) {
 		this.experienceId = experienceId;
-		this.userId = userId;
+		this.user = user;
 		this.role = role;
 		this.companyName = companyName;
 		this.startDate = startDate;
@@ -48,19 +60,20 @@ public class Experience {
 		log.info("Experience object created with ID: {}", experienceId);
 	}
 
-	public Experience(Long userId, String role, String companyName, LocalDate startDate, LocalDate endDate) {
-		this.userId = userId;
+	public Experience(User user, String role, String companyName, LocalDate startDate, LocalDate endDate) {
+		this.user = user;
 		this.role = role;
 		this.companyName = companyName;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		log.info("Experience object created for user ID: {}", userId);
+		log.info("Experience object created for user ID: {}", user);
 	}
 
 	public Experience() {
 		log.debug("Empty Experience object created");
 	}
 
+	
 	public Long getExperienceId() {
 		return experienceId;
 	}
@@ -68,12 +81,12 @@ public class Experience {
 		this.experienceId = experienceId;
 		log.debug("Set experienceId to {}", experienceId);
 	}
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
-		log.debug("Set userId to {}", userId);
+	public void setUser(User user) {
+		this.user = user;
+		log.debug("Set userId to {}", user);
 	}
 	public String getRole() {
 		return role;
@@ -106,7 +119,7 @@ public class Experience {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(companyName, endDate, experienceId, role, startDate, userId);
+		return Objects.hash(companyName, endDate, experienceId, role, startDate, user);
 	}
 
 	@Override
@@ -119,13 +132,13 @@ public class Experience {
 			&& Objects.equals(experienceId, other.experienceId)
 			&& Objects.equals(role, other.role)
 			&& Objects.equals(startDate, other.startDate)
-			&& Objects.equals(userId, other.userId);
+			&& Objects.equals(user, other.user);
 	}
 
 	@Override
 	public String toString() {
 		log.debug("toString() called on Experience object");
-		return "Experience [experienceId=" + experienceId + ", userId=" + userId + ", role=" + role
+		return "Experience [experienceId=" + experienceId + ", role=" + role
 				+ ", companyName=" + companyName + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 }
