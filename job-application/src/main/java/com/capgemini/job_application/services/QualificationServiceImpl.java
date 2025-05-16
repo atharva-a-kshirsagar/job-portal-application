@@ -6,16 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.job_application.entities.Qualification;
+import com.capgemini.job_application.entities.User;
+import com.capgemini.job_application.exceptions.UserNotFoundException;
 import com.capgemini.job_application.repositories.QualificationRepository;
+import com.capgemini.job_application.repositories.UserRepository;
 
 @Service
 public class QualificationServiceImpl implements QualificationService{
 
 	private final QualificationRepository qualificationRepository;
+	private final UserRepository userRepository;
 	
 	@Autowired
-	public QualificationServiceImpl(QualificationRepository qualificationRepository) {
+	public QualificationServiceImpl(QualificationRepository qualificationRepository, UserRepository userRepository) {
 		this.qualificationRepository = qualificationRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -30,6 +35,17 @@ public class QualificationServiceImpl implements QualificationService{
 
 	@Override
 	public Qualification createQualification(Qualification qualification) {
+//		if(qualification.getUser()==null) {
+//			throw new RuntimeException("Users is null");
+//		}
+		System.out.println("User ID: " + qualification.getUser().getUserId());
+		System.out.println("Qualification: " + qualification);
+
+		System.err.println(qualification.getUser());
+		Long userId = qualification.getUser().getUserId();
+		User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User with given Id not found"));
+		qualification.setUser(user);
+		
 		return qualificationRepository.save(qualification);
 	}
 

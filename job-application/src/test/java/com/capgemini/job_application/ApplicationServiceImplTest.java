@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.capgemini.job_application.entities.Application;
+import com.capgemini.job_application.entities.Job;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.repositories.ApplicationRepository;
 import com.capgemini.job_application.services.ApplicationServiceImpl;
 
@@ -37,10 +39,14 @@ class ApplicationServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        User user=new User();
+    	user.setUserId(101L);
+    	Job job=new Job();
+    	job.setJobId(201L);
         application = new Application();
         application.setApplicationId(1L);
-        application.setUserId(101L);
-        application.setJobId(201L);
+        application.setUser(user);
+        application.setJob(job);
         application.setStatus("Pending");
         application.setAppliedDate(LocalDate.now());
     }
@@ -72,24 +78,28 @@ class ApplicationServiceImplTest {
         Application result = applicationService.createApplication(application);
 
         assertNotNull(result);
-        assertEquals(application.getUserId(), result.getUserId());
+        assertEquals(application.getUser(), result.getUser());
     }
 
     @Test
     void testUpdateApplication() {
+    	User user=new User();
+    	user.setUserId(999L);
+    	Job job=new Job();
+    	job.setJobId(888L);
         when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(Application.class))).thenReturn(application);
 
         Application updated = new Application();
-        updated.setUserId(999L);
-        updated.setJobId(888L);
+        updated.setUser(user);
+        updated.setJob(job);
         updated.setStatus("Approved");
         updated.setAppliedDate(LocalDate.now());
 
         Application result = applicationService.updateApplication(1L, updated);
 
         assertEquals("Approved", result.getStatus());
-        assertEquals(999L, result.getUserId());
+        assertEquals(999L, result.getUser());
     }
 
     @Test

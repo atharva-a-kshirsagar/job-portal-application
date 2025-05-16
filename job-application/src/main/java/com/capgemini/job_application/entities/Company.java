@@ -1,6 +1,12 @@
 package com.capgemini.job_application.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -14,9 +20,9 @@ public class Company {
 	@Column(name = "company_id")
 	private Long companyId;
 
-	@NotNull(message = "User ID is required")
-	@Column(name = "user_id", nullable = false)
-	private Long userId;
+//	@NotNull(message = "User ID is required")
+//	@Column(name = "user_id", nullable = false)
+//	private Long userId;
 
 	@NotBlank(message = "Company name is required")
 	@Column(name = "company_name", nullable = false, length = 100)
@@ -29,13 +35,27 @@ public class Company {
 	@NotBlank(message = "Head office location is required")
 	@Column(name = "head_office", nullable = false, length = 100)
 	private String headOffice;
+	
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	@JsonBackReference(value = "user-company")
+	private User user;
 
+	
+	
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference(value = "company-job")
+	private List<Job> jobs = new ArrayList<>();
+
+
+ 	
+	
 	public Company() {
 	}
 
-	public Company(Long companyId, Long userId, String companyName, String companyDomain, String headOffice) {
+	public Company(Long companyId, User user, String companyName, String companyDomain, String headOffice) {
 		this.companyId = companyId;
-		this.userId = userId;
+		this.user = user;
 		this.companyName = companyName;
 		this.companyDomain = companyDomain;
 		this.headOffice = headOffice;
@@ -51,12 +71,20 @@ public class Company {
 		this.companyId = companyId;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public List<Job> getJobs() {
+		return jobs;
+	}
+
+	public void setJobs(List<Job> jobs) {
+		this.jobs = jobs;
 	}
 
 	public String getCompanyName() {
@@ -85,24 +113,21 @@ public class Company {
 
 	@Override
 	public String toString() {
-		return "Company [companyId=" + companyId + ", userId=" + userId + ", companyName=" + companyName
+		return "Company [companyId=" + companyId + ", companyName=" + companyName
 				+ ", companyDomain=" + companyDomain + ", headOffice=" + headOffice + "]";
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(companyDomain, companyId, companyName, headOffice, userId);
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Company company = (Company) o;
+		return Objects.equals(companyId, company.companyId);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null || getClass() != obj.getClass())
-			return false;
-		Company other = (Company) obj;
-		return Objects.equals(companyDomain, other.companyDomain) && Objects.equals(companyId, other.companyId)
-				&& Objects.equals(companyName, other.companyName) && Objects.equals(headOffice, other.headOffice)
-				&& Objects.equals(userId, other.userId);
+	public int hashCode() {
+		return Objects.hash(companyId);
 	}
+
 }

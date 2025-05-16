@@ -47,7 +47,7 @@ public class JobServiceImpl implements JobService {
 		log.info("Updating job with ID: {}", id);
 		Job existing = jobRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Job not found with Id:" + id));
-		existing.setCompanyId(updated.getCompanyId());
+		existing.setCompany(updated.getCompany());
 		existing.setJobTitle(updated.getJobTitle());
 		existing.setDescription(updated.getDescription());
 		existing.setSalary(updated.getSalary());
@@ -55,7 +55,6 @@ public class JobServiceImpl implements JobService {
 		existing.setDeadlineDate(updated.getDeadlineDate());
 		return jobRepository.save(existing);
 	}
-
 
 
 	@Override

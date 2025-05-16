@@ -39,7 +39,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Application createApplication(Application applicant) {
-        log.info("Creating application for userId: {}", applicant.getUserId());
+        log.info("Creating application for userId: {}", applicant.getUser());
         return applicationRepository.save(applicant);
     }
 
@@ -52,10 +52,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                     return new RuntimeException("User not found with ID: " + id);
                 });
 
-        existing.setJobId(applicant.getJobId());
+        existing.setJob(applicant.getJob());
         existing.setAppliedDate(applicant.getAppliedDate());
         existing.setStatus(applicant.getStatus());
-        existing.setUserId(applicant.getUserId());
+        existing.setUser(applicant.getUser());
 
         return applicationRepository.save(existing);
     }
@@ -69,8 +69,8 @@ public class ApplicationServiceImpl implements ApplicationService {
                     return new RuntimeException("User not found with ID: " + id);
                 });
 
-        if (applicant.getJobId() != null) {
-            existing.setJobId(applicant.getJobId());
+        if (applicant.getJob() != null) {
+            existing.setJob(applicant.getJob());
         }
         if (applicant.getAppliedDate() != null) {
             existing.setAppliedDate(applicant.getAppliedDate());
@@ -78,8 +78,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (applicant.getStatus() != null) {
             existing.setStatus(applicant.getStatus());
         }
-        if (applicant.getUserId() != null) {
-            existing.setUserId(applicant.getUserId());
+        if (applicant.getUser() != null) {
+            existing.setUser(applicant.getUser());
         }
 
         return applicationRepository.save(existing);

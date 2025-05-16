@@ -3,6 +3,7 @@ package com.capgemini.job_application;
 import com.capgemini.job_application.controllers.ExperienceController;
 
 import com.capgemini.job_application.entities.Experience;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.ExperienceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,19 +41,19 @@ public class ExperienceControllerTest {
 
 	@Test
     void testGetExperienceByUserId() throws Exception {
-//		User user = new User();
-//        user.setUserId(100L);
+		User user = new User();
+        user.setUserId(100L);
         Experience exp = new Experience();
         exp.setExperienceId(1L);
-//        exp.setUser(user);
-        exp.setUserId(100L);
+        exp.setUser(user);
+//        exp.setUserId(100L);
         exp.setRole("Developer");
         exp.setCompanyName("TechCorp");
         exp.setStartDate(LocalDate.of(2020, 1, 1));
         exp.setEndDate(LocalDate.of(2022, 1, 1));
 
         List<Experience> experiences = Arrays.asList(exp);
-        Mockito.when(experienceService.getExperienceByUser_id(100L)).thenReturn(experiences);
+        Mockito.when(experienceService.getExperienceByUserId(100L)).thenReturn(experiences);
 
         mockMvc.perform(get("/api/experiences/100"))
                 .andExpect(status().isOk())
@@ -61,11 +62,11 @@ public class ExperienceControllerTest {
 
     @Test
     void testCreateExperience() throws Exception {
-//    	User user = new User();
-//        user.setId(101L);
+    	User user = new User();
+        user.setUserId(101L);
         Experience input = new Experience();
-//        input.setUser(user);
-        input.setUserId(101L);
+        input.setUser(user);
+//        input.setUserId(101L);
         input.setRole("Tester");
         input.setCompanyName("Test Inc");
         input.setStartDate(LocalDate.of(2021, 1, 1));
@@ -73,8 +74,8 @@ public class ExperienceControllerTest {
 
         Experience saved = new Experience();
         saved.setExperienceId(1L);
-//        saved.setUser(user);
-        saved.setUserId(101L);
+        saved.setUser(user);
+//        saved.setUserId(101L);
         saved.setRole("Tester");
         saved.setCompanyName("Test Inc");
         saved.setStartDate(LocalDate.of(2021, 1, 1));
@@ -107,11 +108,11 @@ public class ExperienceControllerTest {
 
     @Test
     void testUpdateExperience() throws Exception {
-//    	User user = new User();
-//        user.setId(100L);
+    	User user = new User();
+        user.setUserId(100L);
         Experience updatedInput = new Experience();
-//        updatedInput.setUser(user);
-        updatedInput.setUserId(100L);
+        updatedInput.setUser(user);
+//        updatedInput.setUserId(100L);
         updatedInput.setRole("Senior Developer");
         updatedInput.setCompanyName("NewTech");
         updatedInput.setStartDate(LocalDate.of(2020, 1, 1));
@@ -119,8 +120,8 @@ public class ExperienceControllerTest {
 
         Experience updatedOutput = new Experience();
         updatedOutput.setExperienceId(1L);
-//        updatedOutput.setUser(user);
-        updatedOutput.setUserId(100L);
+        updatedOutput.setUser(user);
+//        updatedOutput.setUserId(100L);
         updatedOutput.setRole("Senior Developer");
         updatedOutput.setCompanyName("NewTech");
         updatedOutput.setStartDate(LocalDate.of(2020, 1, 1));

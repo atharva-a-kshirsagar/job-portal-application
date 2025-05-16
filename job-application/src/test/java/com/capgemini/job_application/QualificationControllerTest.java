@@ -2,6 +2,7 @@ package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.QualificationController;
 import com.capgemini.job_application.entities.Qualification;
+import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.QualificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,9 +41,11 @@ class QualificationControllerTest {
 
     @BeforeEach
     void setUp() {
+    	User user=new User();
+    	user.setUserId(100L);
         qualification = new Qualification();
         qualification.setQualificationId(1L);
-        qualification.setUserId(101L);
+        qualification.setUser(user);
         qualification.setDegree("B.Tech");
         qualification.setInstitute("ABC Institute");
         qualification.setQualificationType("Graduation");
@@ -93,7 +96,7 @@ class QualificationControllerTest {
         updated.setStartDate(LocalDate.of(2024, 1, 1));
         updated.setEndDate(LocalDate.of(2026, 1, 1));
         updated.setUrl("http://xyz.com");
-        updated.setUserId(101L);
+        updated.setUser(new User());
 
         when(qualificationService.updateQualification(eq(1L), any(Qualification.class))).thenReturn(updated);
 

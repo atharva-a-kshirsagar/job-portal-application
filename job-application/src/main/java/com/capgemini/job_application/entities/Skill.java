@@ -2,11 +2,15 @@ package com.capgemini.job_application.entities;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -23,8 +27,10 @@ public class Skill {
 	@Column(name ="skill_name")
 	private String skillName;
 	
-//	@ManyToMany(mappedBy="skills")
-//	private Set<User> users = new HashSet<>();
+
+	@ManyToMany(mappedBy = "skills")
+//	@JsonBackReference(value = "user-skill")
+	private List<User> users = new ArrayList<User>();
 		
 	public Skill() {
 

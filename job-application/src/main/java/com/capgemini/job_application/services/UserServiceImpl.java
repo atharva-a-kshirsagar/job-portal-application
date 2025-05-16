@@ -1,11 +1,15 @@
 package com.capgemini.job_application.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.job_application.entities.User;
+import com.capgemini.job_application.exceptions.SkillNotFoundException;
+import com.capgemini.job_application.exceptions.UserNotFoundException;
+import com.capgemini.job_application.repositories.SkillRepository;
 import com.capgemini.job_application.repositories.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j 
 public class UserServiceImpl implements UserService{
 	
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+	private final SkillRepository skillRepository;
 	
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository) {
+	public UserServiceImpl(UserRepository userRepository, SkillRepository skillRepository) {
 		super();
 		this.userRepository = userRepository;
+		this.skillRepository = skillRepository;
 	}
 
 	@Override
@@ -70,6 +76,39 @@ public class UserServiceImpl implements UserService{
 		newUser.setGender(user.getGender());
 		log.debug("Saving updated user to the repository"); 
 		return userRepository.save(newUser);
+	}
+
+	@Override
+	public User findByUserEmail(String email) {
+		// TODO Auto-generated method stub
+		return userRepository.findByUserEmail(email).orElseThrow( ()-> new UserNotFoundException("user this email id not found: "+email));
+	}
+
+	@Override
+	public User findByUserNameOrUserEmail(String name, String email) {
+		// TODO Auto-generated method stub
+		return userRepository.findByUserNameOrUserEmail(name,email).orElseThrow( ()-> new UserNotFoundException("user this email id not found: "+email));
+	}
+
+	@Override
+	public boolean existsByUserName(String name) {
+		// TODO Auto-generated method stub
+		return userRepository.existsByUserName(name);
+	}
+
+	@Override
+	public boolean existsByUserEmail(String email) {
+		// TODO Auto-generated method stub
+		return userRepository.existsByUserEmail(email);
+	}
+
+	@Override
+	public User setUserSkill(Long userId ,Long skillId) {
+		// TODO Auto-generated method stub
+		User user  = userRepository.findById(userId).orElseThrow( ()-> new UserNotFoundException("user this email id not found: "+userId));
+		user.getSkills().add(skillRepository.findById(skillId).orElseThrow(()-> new SkillNotFoundException("Skill with this id not found "+skillId)));
+		
+		return userRepository.save(user);
 	}
 	
 }

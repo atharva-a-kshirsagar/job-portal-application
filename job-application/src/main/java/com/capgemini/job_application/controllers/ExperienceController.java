@@ -38,7 +38,7 @@ public class ExperienceController {
 	@GetMapping("/{userId}")
 	public ResponseEntity<List<Experience>> getExperienceByUserId(@PathVariable Long userId){
 		log.info("Received request to fetch experience with ID: {}", userId);
-		List<Experience> experiences = expService.getExperienceByUser_id(userId);
+		List<Experience> experiences = expService.getExperienceByUserId(userId);
 		log.debug("Returning {} experiences", experiences.size()); 
 		return ResponseEntity.status(HttpStatus.OK).body(experiences);
 	}
