@@ -7,13 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
-
+	
 	private final CompanyRepository companyRepository;
+	
+	
 
 	@Override
 	public List<Company> getAllCompanies() {
@@ -83,4 +86,9 @@ public class CompanyServiceImpl implements CompanyService {
 		}
 		companyRepository.deleteById(id);
 	}
+
+	@Override
+	public Optional<Company> getCompanyByUserId(Long userId) {
+        return companyRepository.findByUserId(userId);
+    }
 }
