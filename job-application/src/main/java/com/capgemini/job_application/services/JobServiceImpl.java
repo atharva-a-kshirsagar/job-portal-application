@@ -70,4 +70,9 @@ public class JobServiceImpl implements JobService {
 		}
 		jobRepository.deleteById(id);
 	}
+
+	@Override
+	public List<Job> getTop5JobsBySalary() {
+		 return jobRepository.findTop5ByOrderBySalaryDesc();
+	}
 }

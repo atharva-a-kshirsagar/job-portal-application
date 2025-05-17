@@ -49,7 +49,6 @@ public class Experience {
 	private User user;
 	
 	
-
 	public Experience(Long experienceId, User user, String role, String companyName, LocalDate startDate, LocalDate endDate) {
 		this.experienceId = experienceId;
 		this.user = user;
