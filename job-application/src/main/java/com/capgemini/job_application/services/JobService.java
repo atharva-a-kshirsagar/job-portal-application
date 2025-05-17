@@ -20,5 +20,8 @@ public interface JobService {
 
 	void deleteJob(Long id);
 	
+	List<Job> getJobsByCompanyId(Long companyId); 
+
 	public List<Job> getTop5JobsBySalary();
+
 }

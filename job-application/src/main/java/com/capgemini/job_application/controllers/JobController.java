@@ -52,6 +52,13 @@ public class JobController {
 		return ResponseEntity.status(HttpStatus.CREATED).location(URI.create("/api/jobs/" + saved.getJobId()))
 				.body(saved);
 	}
+	
+	@GetMapping("/company/{companyId}")
+	public ResponseEntity<List<Job>> getJobsByCompany(@PathVariable Long companyId) {
+	    log.info("GET /api/jobs/company/{} - Fetching jobs by company ID", companyId);
+	    List<Job> jobs = jobService.getJobsByCompanyId(companyId);
+	    return ResponseEntity.ok(jobs);
+	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Job> updateJob(@PathVariable Long id, @Valid @RequestBody Job newJob, BindingResult result) {
