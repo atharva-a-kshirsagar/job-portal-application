@@ -11,6 +11,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
 	@Query	(value = "SELECT * FROM job WHERE job_id = ?1", nativeQuery = true)
 	List<Job> findByJobId(Long job_id);
+	
+	List<Job> findTop5ByOrderBySalaryDesc();
 
 	
     @Query("SELECT j.company.companyDomain, COUNT(j) FROM Job j WHERE j.company.user.userId = :userId GROUP BY j.company.companyDomain")
