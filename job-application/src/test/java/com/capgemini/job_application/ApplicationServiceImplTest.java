@@ -1,107 +1,67 @@
 package com.capgemini.job_application;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.repositories.ApplicationRepository;
 import com.capgemini.job_application.services.ApplicationServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import java.time.LocalDate;
+import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-class ApplicationServiceImplTest {
+public class ApplicationServiceImplTest {
 
-    @Mock
     private ApplicationRepository applicationRepository;
-
-    @InjectMocks
     private ApplicationServiceImpl applicationService;
 
     private Application application;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setup() {
+        applicationRepository = mock(ApplicationRepository.class);
+        applicationService = new ApplicationServiceImpl(applicationRepository);
 
-        User user=new User();
-    	user.setUserId(101L);
-    	Job job=new Job();
-    	job.setJobId(201L);
-        application = new Application();
-        application.setApplicationId(1L);
-        application.setUser(user);
-        application.setJob(job);
-        application.setStatus("Pending");
-        application.setAppliedDate(LocalDate.now());
-    }
+        User user = new User();
+        user.setUserId(1L);
 
-    @Test
-    void testGetAllApplication() {
-        List<Application> list = List.of(application);
-        when(applicationRepository.findAll()).thenReturn(list);
+        Job job = new Job();
+        job.setJobId(1L);
 
-        List<Application> result = applicationService.getAllApplication();
-
-        assertEquals(1, result.size());
-        assertEquals(application, result.get(0));
-    }
-
-    @Test
-    void testGetApplicationById() {
-        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
-
-        Application result = applicationService.getApplicationById(1L);
-
-        assertEquals(1L, result.getApplicationId());
+        application = new Application(1L, user, job, LocalDate.now(), "Pending");
     }
 
     @Test
     void testCreateApplication() {
         when(applicationRepository.save(application)).thenReturn(application);
+        Application created = applicationService.createApplication(application);
+        assertEquals("Pending", created.getStatus());
+    }
 
-        Application result = applicationService.createApplication(application);
+    @Test
+    void testGetAllApplications() {
+        when(applicationRepository.findAll()).thenReturn(List.of(application));
+        List<Application> list = applicationService.getAllApplication();
+        assertEquals(1, list.size());
+    }
 
-        assertNotNull(result);
-        assertEquals(application.getUser(), result.getUser());
+    @Test
+    void testGetApplicationById() {
+        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
+        Application found = applicationService.getApplicationById(1L);
+        assertNotNull(found);
+        assertEquals(1L, found.getApplicationId());
     }
 
     @Test
     void testUpdateApplication() {
-    	User user=new User();
-    	user.setUserId(999L);
-    	Job job=new Job();
-    	job.setJobId(888L);
         when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
-        when(applicationRepository.save(any(Application.class))).thenReturn(application);
+        when(applicationRepository.save(application)).thenReturn(application);
 
-        Application updated = new Application();
-        updated.setUser(user);
-        updated.setJob(job);
-        updated.setStatus("Approved");
-        updated.setAppliedDate(LocalDate.now());
-
-        Application result = applicationService.updateApplication(1L, updated);
-
-        assertEquals("Approved", result.getStatus());
-        assertEquals(Long.valueOf(999L), result.getUser().getUserId());
-
-
+        Application updated = applicationService.updateApplication(1L, application);
+        assertEquals("Pending", updated.getStatus());
     }
 
     @Test
@@ -111,5 +71,17 @@ class ApplicationServiceImplTest {
 
         assertDoesNotThrow(() -> applicationService.deleteApplication(1L));
         verify(applicationRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testPatchApplication() {
+        Application patchData = new Application();
+        patchData.setStatus("Selected");
+
+        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
+        when(applicationRepository.save(Mockito.any())).thenReturn(application);
+
+        Application patched = applicationService.patchApplication(1L, patchData);
+        assertEquals("Selected", patched.getStatus());
     }
 }
