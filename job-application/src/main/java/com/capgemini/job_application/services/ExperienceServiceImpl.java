@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.capgemini.job_application.entities.Experience;
 import com.capgemini.job_application.entities.User;
+import com.capgemini.job_application.exceptions.ExperienceNotFoundException;
+import com.capgemini.job_application.exceptions.UserNotFoundException;
 import com.capgemini.job_application.repositories.ExperienceRepository;
 import com.capgemini.job_application.repositories.UserRepository;
 
@@ -36,21 +38,12 @@ public class ExperienceServiceImpl implements ExperienceService {
 
 	@Override
 	public Experience createExperience(Experience experience) {
-//		System.out.println("USER INSIDE EXPERIENCE: " + experience.getUser());
-//		System.out.println("USER ID: " + (experience.getUser() != null ? experience.getUser().getUserId() : "null"));
-//		
-//        log.info("Creating new experience for user ID: {}", experience.getUser());
-//        Experience savedExperience = expRepo.save(experience);
-//        log.debug("Experience created with ID: {}", savedExperience.getExperienceId());
-//        return savedExperience;
 		log.info("Creating new experience for user ID: {}", experience.getUser());
 
-	    // Fix: Fetch the managed user entity
 	    Long userId = experience.getUser().getUserId();
 	    User existingUser = userRepository.findById(userId)
-	        .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+	        .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
-	    // Set the managed user
 	    experience.setUser(existingUser);
 
 	    Experience savedExperience = expRepo.save(experience);
@@ -68,10 +61,8 @@ public class ExperienceServiceImpl implements ExperienceService {
 	@Override
 	public void deleteAllExperiencesByUserId(Long userId) {
         log.info("Deleting all experiences for user ID: {}", userId);
-        //expRepo.deleteByUserId(userId);
         List<Experience> experiences = expRepo.findByUserId(userId);
         expRepo.deleteAll(experiences);
-      // Experience exp = expRepo.findById(userId).orElseThrow();
         log.debug("All experiences for user ID {} deleted", userId);
     }
 
@@ -81,7 +72,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         Experience existingExp = expRepo.findById(expId)
             .orElseThrow(() -> {
                 log.warn("Experience not found with ID: {}", expId);
-                return new RuntimeException("Experience with that ID does not exist");
+                return new ExperienceNotFoundException("Experience with that ID does not exist");
             });
 
         existingExp.setStartDate(updatedExperience.getStartDate());

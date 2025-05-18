@@ -1,5 +1,4 @@
 package com.capgemini.job_application;
-
 import com.capgemini.job_application.controllers.ExperienceController;
 import com.capgemini.job_application.entities.Experience;
 import com.capgemini.job_application.entities.User;
@@ -10,7 +9,6 @@ import org.mockito.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;

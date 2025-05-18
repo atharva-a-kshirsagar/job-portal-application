@@ -1,5 +1,4 @@
 package com.capgemini.job_application;
-
 import com.capgemini.job_application.controllers.CompanyController;
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.entities.User;
@@ -12,9 +11,7 @@ import org.mockito.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 

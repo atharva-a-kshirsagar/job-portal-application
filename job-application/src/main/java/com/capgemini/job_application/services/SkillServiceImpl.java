@@ -1,12 +1,11 @@
 package com.capgemini.job_application.services;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.capgemini.job_application.controllers.SkillController;
 import com.capgemini.job_application.entities.Skill;
 import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.repositories.SkillRepository;

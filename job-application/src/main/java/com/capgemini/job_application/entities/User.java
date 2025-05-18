@@ -1,11 +1,10 @@
 package com.capgemini.job_application.entities;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -24,7 +23,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user")
@@ -50,7 +48,6 @@ public class User {
 
 	@Column(name = "password")
 	@NotNull
-//	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$", message = "Password must be 8-20 characters, include upper and lower case letters, a digit, and a special character")
 	private String password;
 
 	@Column(name = "address")
@@ -69,7 +66,6 @@ public class User {
 	@Column(name = "gender")
 	private String gender;
 
-	// Realtions :
 
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	@JsonManagedReference(value = "user-experience")
@@ -90,49 +86,56 @@ public class User {
 
 	@ManyToMany
 	@JoinTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-//	@JsonManagedReference(value = "user-skill")
 	private List<Skill> skills;
 
 
-	public User(Long userId, String userName, String userEmail, String phone, String password, String address,
-			String userType, Integer age, String gender) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.userEmail = userEmail;
-		this.phone = phone;
-		this.password = password;
-		this.address = address;
-		this.userType = userType;
-		this.age = age;
-		this.gender = gender;
-	}
+	public User(Long userId, String userName, String userEmail, String phone, String password,
+            String address, String userType, Integer age, String gender) {
+    this.userId = userId;
+    this.userName = userName;
+    this.userEmail = userEmail;
+    this.phone = phone;
+    this.password = password;
+    this.address = address;
+    this.userType = userType;
+    this.age = age;
+    this.gender = gender;
+}
+
 	
 
-	public User(Long userId, @NotBlank(message = "UserName must not be blank.") String userName,
-			@NotBlank(message = "Email must not be blank.") @Email(message = "{validatedValue} is not a valid email") String userEmail,
-			@NotBlank(message = "Contact number must not be blank.") String phone, @NotNull String password,
-			@NotBlank(message = "Address must not be blank.") String address,
-			@NotNull(message = "User Type must not be blank.") String userType,
-			@Min(value = 18, message = "Age must be at least 18") Integer age,
-			@NotNull(message = "Gender must not be blank.") String gender, List<Qualification> qualifications,
-			List<Experience> experiences, List<Application> applications, Company company, List<Skill> skills) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.userEmail = userEmail;
-		this.phone = phone;
-		this.password = password;
-		this.address = address;
-		this.userType = userType;
-		this.age = age;
-		this.gender = gender;
-		this.qualifications = qualifications;
-		this.experiences = experiences;
-		this.applications = applications;
-		this.company = company;
-		this.skills = skills;
-	}
+	public User(
+		    Long userId,
+		    @NotBlank(message = "UserName must not be blank.") String userName,
+		    @NotBlank(message = "Email must not be blank.")
+		    @Email(message = "{validatedValue} is not a valid email") String userEmail,
+		    @NotBlank(message = "Contact number must not be blank.") String phone,
+		    @NotNull(message = "Password must not be null.") String password,
+		    @NotBlank(message = "Address must not be blank.") String address,
+		    @NotNull(message = "User Type must not be blank.") String userType,
+		    @Min(value = 18, message = "Age must be at least 18") Integer age,
+		    @NotNull(message = "Gender must not be blank.") String gender,
+		    List<Qualification> qualifications,
+		    List<Experience> experiences,
+		    List<Application> applications,
+		    Company company,
+		    List<Skill> skills
+		) {
+		    this.userId = userId;
+		    this.userName = userName;
+		    this.userEmail = userEmail;
+		    this.phone = phone;
+		    this.password = password;
+		    this.address = address;
+		    this.userType = userType;
+		    this.age = age;
+		    this.gender = gender;
+		    this.qualifications = qualifications != null ? qualifications : new ArrayList<>();
+		    this.experiences = experiences != null ? experiences : new ArrayList<>();
+		    this.applications = applications != null ? applications : new ArrayList<>();
+		    this.company = company;
+		    this.skills = skills != null ? skills : new ArrayList<>();
+		}
 
 
 	public User() {
@@ -225,7 +228,6 @@ public class User {
 				+ ", password=" + password + ", address=" + address + ", userType=" + userType + ", age=" + age
 				+ ", gender=" + gender;
 	}
-//, qualification: "+qualifications +", experience : "+experiences +", applications: "+applications+", skills"+skills+ "
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

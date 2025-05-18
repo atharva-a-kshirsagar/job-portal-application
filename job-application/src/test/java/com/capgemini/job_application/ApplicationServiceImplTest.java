@@ -1,18 +1,14 @@
 package com.capgemini.job_application;
-
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.repositories.ApplicationRepository;
 import com.capgemini.job_application.services.ApplicationServiceImpl;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import java.time.LocalDate;
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

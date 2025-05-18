@@ -2,18 +2,15 @@ package com.capgemini.job_application.services;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.dtos.CompanyDashBoardDto;
 import com.capgemini.job_application.dtos.JobDto;
 import com.capgemini.job_application.dtos.UserDashBoardDto;
 import com.capgemini.job_application.entities.Application;
-import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.exceptions.UserNotFoundException;
@@ -23,163 +20,169 @@ import com.capgemini.job_application.repositories.SkillRepository;
 import com.capgemini.job_application.repositories.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
-@Slf4j 
-public class UserServiceImpl implements UserService{
-	
-	private final UserRepository userRepository;
-	private final SkillRepository skillRepository;
-	private final ApplicationRepository applicationRepository;
-	private final JobRepository jobRepository;
-	
-	
-	@Autowired
-	public UserServiceImpl(UserRepository userRepository, SkillRepository skillRepository, ApplicationRepository applicationRepository, JobRepository jobRepository) {
-		super();
-		this.userRepository = userRepository;
-		this.skillRepository = skillRepository;
-		this.applicationRepository = applicationRepository;
-		this.jobRepository = jobRepository;
-	}
+public class UserServiceImpl implements UserService {
 
-	@Override
-	public List<User> getAllUsers() {
-		log.debug("Fetching all users from the repository"); 
-		return userRepository.findAll();
-	}
+    private final UserRepository userRepository;
+    private final SkillRepository skillRepository;
+    private final ApplicationRepository applicationRepository;
+    private final JobRepository jobRepository;
 
-	@Override
-	public User getUserById(Long id) {
-	    log.debug("Fetching user by ID: {}", id);
-	    return userRepository.findById(id)
-	        .orElseThrow(() -> {
-	            log.warn("User not found with ID: {}", id);
-	            return new RuntimeException("No user found with ID: " + id);
-	        });
-	}
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, SkillRepository skillRepository, 
+                           ApplicationRepository applicationRepository, JobRepository jobRepository) {
+        this.userRepository = userRepository;
+        this.skillRepository = skillRepository;
+        this.applicationRepository = applicationRepository;
+        this.jobRepository = jobRepository;
+    }
 
+    @Override
+    public List<User> getAllUsers() {
+        log.debug("Fetching all users");
+        return userRepository.findAll();
+    }
 
-	@Override
-	public User createUser(User user) {
-		log.debug("Saving new user to the repository"); 
-		return userRepository.save(user);
-	}
+    @Override
+    public User getUserById(Long id) {
+        log.debug("Fetching user by ID: {}", id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("User not found with ID: {}", id);
+                    return new UserNotFoundException("User not found with ID: " + id);
+                });
+    }
 
-	@Override
-	public void deleteUser(Long id) {
-		log.debug("Deleting user by ID: {}", id);
-	    User user = userRepository.findById(id)
-	        .orElseThrow(() -> new RuntimeException("No user found with user ID: " + id));
-	    userRepository.delete(user);
-	}
+    @Override
+    public User createUser(User user) {
+        log.debug("Creating new user with email: {}", user.getUserEmail());
+        return userRepository.save(user);
+    }
 
+    @Override
+    public void deleteUser(Long id) {
+        log.debug("Deleting user by ID: {}", id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+        userRepository.delete(user);
+        log.info("User deleted with ID: {}", id);
+    }
 
-	
-	
+    @Override
+    public User updateUser(Long id, User user) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
 
-	@Override
-	public User updateUser(Long id, User user) {
-		User newUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No user found with ID: " + id));
-;
-		newUser.setUserName(user.getUserName());
-		newUser.setPhone(user.getPhone());
-		newUser.setPassword(user.getPassword());
-		newUser.setAddress(user.getAddress());
-		newUser.setUserType(user.getUserType());
-		newUser.setAge(user.getAge());
-		newUser.setGender(user.getGender());
-		log.debug("Saving updated user to the repository"); 
-		return userRepository.save(newUser);
-	}
+        existingUser.setUserName(user.getUserName());
+        existingUser.setPhone(user.getPhone());
+        existingUser.setPassword(user.getPassword());
+        existingUser.setAddress(user.getAddress());
+        existingUser.setUserType(user.getUserType());
+        existingUser.setAge(user.getAge());
+        existingUser.setGender(user.getGender());
 
-	@Override
-	public User findByUserEmail(String email) {
-		// TODO Auto-generated method stub
-		return userRepository.findByUserEmail(email).orElseThrow( ()-> new UserNotFoundException("user this email id not found: "+email));
-	}
+        log.debug("Updating user with ID: {}", id);
+        return userRepository.save(existingUser);
+    }
 
-	@Override
-	public User findByUserNameOrUserEmail(String name, String email) {
-		// TODO Auto-generated method stub
-		return userRepository.findByUserNameOrUserEmail(name,email).orElseThrow( ()-> new UserNotFoundException("user this email id not found: "+email));
-	}
+    @Override
+    public User findByUserEmail(String email) {
+        log.debug("Finding user by email: {}", email);
+        return userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+    }
 
-	@Override
-	public boolean existsByUserName(String name) {
-		// TODO Auto-generated method stub
-		return userRepository.existsByUserName(name);
-	}
+    @Override
+    public User findByUserNameOrUserEmail(String name, String email) {
+        log.debug("Finding user by name: {} or email: {}", name, email);
+        return userRepository.findByUserNameOrUserEmail(name, email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with name: " + name + " or email: " + email));
+    }
 
-	@Override
-	public boolean existsByUserEmail(String email) {
-		// TODO Auto-generated method stub
-		return userRepository.existsByUserEmail(email);
-	}
+    @Override
+    public boolean existsByUserName(String name) {
+        log.debug("Checking existence of username: {}", name);
+        return userRepository.existsByUserName(name);
+    }
 
-	@Override
-	public User setUserSkill(Long userId ,Long skillId) {
-		// TODO Auto-generated method stub
-		User user  = userRepository.findById(userId).orElseThrow( ()-> new UserNotFoundException("user this email id not found: "+userId));
-		user.getSkills().add(skillRepository.findById(skillId).orElseThrow(()-> new SkillNotFoundException("Skill with this id not found "+skillId)));
-		
-		return userRepository.save(user);
-	}
+    @Override
+    public boolean existsByUserEmail(String email) {
+        log.debug("Checking existence of user email: {}", email);
+        return userRepository.existsByUserEmail(email);
+    }
 
-	@Override
-	public List<JobDto> getJobDto(Long userId) {
-		// TODO Auto-generated method stub
-		return userRepository.findJobsToApply(userId);
-	}
+    @Override
+    public User setUserSkill(Long userId, Long skillId) {
+        log.debug("Setting skill with ID: {} for user with ID: {}", skillId, userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
 
-	@Override
-	public UserDashBoardDto getUserDashBoardDto(Long userId) {
-	    List<Application> applications = applicationRepository.findUserUserId(userId);
+        user.getSkills().add(
+                skillRepository.findById(skillId)
+                        .orElseThrow(() -> new SkillNotFoundException("Skill not found with ID: " + skillId))
+        );
 
-	    Long appliedCount = (long) applications.size();
-	    Long shortListed = applications.stream()
-	        .filter(app -> app.getStatus().equalsIgnoreCase("SHORTLISTED"))
-	        .count();
-	    Long rejected = applications.stream()
-	        .filter(app -> app.getStatus().equalsIgnoreCase("REJECTED"))
-	        .count();
-	    Long offered = applications.stream()
-	        .filter(app -> app.getStatus().equalsIgnoreCase("OFFERED"))
-	        .count();
+        User updatedUser = userRepository.save(user);
+        log.info("Added skill ID: {} to user ID: {}", skillId, userId);
+        return updatedUser;
+    }
 
-	    List<JobDto> jobsToApply = getJobDto(userId);
+    @Override
+    public List<JobDto> getJobDto(Long userId) {
+        log.debug("Fetching jobs available for user ID: {}", userId);
+        return userRepository.findJobsToApply(userId);
+    }
 
-	    UserDashBoardDto userdto = new UserDashBoardDto();
-	    userdto.setAppliedCount(appliedCount);
-	    userdto.setShortListed(shortListed);
-	    userdto.setRejected(rejected);
-	    userdto.setOffered(offered);
-	    userdto.setJobsToApply(jobsToApply);
+    @Override
+    public UserDashBoardDto getUserDashBoardDto(Long userId) {
+        log.debug("Building user dashboard for user ID: {}", userId);
+        List<Application> applications = applicationRepository.findUserUserId(userId);
 
-	    return userdto;
-	}
+        long appliedCount = applications.size();
+        long shortListed = applications.stream()
+                .filter(app -> "SHORTLISTED".equalsIgnoreCase(app.getStatus()))
+                .count();
+        long rejected = applications.stream()
+                .filter(app -> "REJECTED".equalsIgnoreCase(app.getStatus()))
+                .count();
+        long offered = applications.stream()
+                .filter(app -> "OFFERED".equalsIgnoreCase(app.getStatus()))
+                .count();
 
-	@Override
-	public CompanyDashBoardDto getDashboardForCompany(Long companyId) {
-		List<Application> allApplications  = applicationRepository.findAll();
+        List<JobDto> jobsToApply = getJobDto(userId);
 
- 	    Long totalJobs = (long) jobRepository.findByCompanyId(companyId).size();
-	    Long totalApplications =(long) applicationRepository.findByCompanyId(companyId).size();
+        UserDashBoardDto userDto = new UserDashBoardDto();
+        userDto.setAppliedCount(appliedCount);
+        userDto.setShortListed(shortListed);
+        userDto.setRejected(rejected);
+        userDto.setOffered(offered);
+        userDto.setJobsToApply(jobsToApply);
 
-	    List<Object[]> genderCounts = applicationRepository.getGenderCounts(companyId);
-	    Long male = 0L, female = 0L;
-	    for (Object[] row : genderCounts) {
-	        String gender = (String) row[0];
-	        Long count = (Long) row[1];
-	        if ("male".equalsIgnoreCase(gender)) male = count;
-	        else if ("female".equalsIgnoreCase(gender)) female = count;
-	    }
+        return userDto;
+    }
 
-	    List<Map<Long, Long>> jobApplicationStats = applicationRepository.findApplicationByJob(companyId).stream()
-	    	    .map(row -> Map.of((Long) row[0], (Long) row[1]))
-	    	    .collect(Collectors.toList());
-	
-	    return new CompanyDashBoardDto(totalApplications, totalJobs, male, female, jobApplicationStats);
-	}
+    @Override
+    public CompanyDashBoardDto getDashboardForCompany(Long companyId) {
+        log.debug("Building company dashboard for company ID: {}", companyId);
 
-	
+        long totalJobs = jobRepository.findByCompanyId(companyId).size();
+        long totalApplications = applicationRepository.findByCompanyId(companyId).size();
+
+        List<Object[]> genderCounts = applicationRepository.getGenderCounts(companyId);
+        long male = 0L, female = 0L;
+        for (Object[] row : genderCounts) {
+            String gender = (String) row[0];
+            Long count = (Long) row[1];
+            if ("male".equalsIgnoreCase(gender)) male = count;
+            else if ("female".equalsIgnoreCase(gender)) female = count;
+        }
+
+        List<Map<Long, Long>> jobApplicationStats = applicationRepository.findApplicationByJob(companyId).stream()
+                .map(row -> Map.of((Long) row[0], (Long) row[1]))
+                .collect(Collectors.toList());
+
+        return new CompanyDashBoardDto(totalApplications, totalJobs, male, female, jobApplicationStats);
+    }
 }

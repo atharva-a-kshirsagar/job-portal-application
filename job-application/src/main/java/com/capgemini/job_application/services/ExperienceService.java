@@ -9,7 +9,7 @@ import com.capgemini.job_application.entities.Experience;
 @Service
 
 public interface ExperienceService {
-	List<Experience> getExperienceByUserId(Long user_id);
+	List<Experience> getExperienceByUserId(Long userId);
     Experience createExperience(Experience experience);
     void deleteExperienceById(Long experienceId);
     void deleteAllExperiencesByUserId(Long userId);

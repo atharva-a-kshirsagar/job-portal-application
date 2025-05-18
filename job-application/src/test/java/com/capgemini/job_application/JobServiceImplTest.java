@@ -1,19 +1,15 @@
 package com.capgemini.job_application;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.exceptions.JobNotFoundException;
 import com.capgemini.job_application.repositories.JobRepository;
 import com.capgemini.job_application.services.JobServiceImpl;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

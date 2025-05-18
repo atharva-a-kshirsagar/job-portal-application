@@ -1,12 +1,9 @@
 package com.capgemini.job_application;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
-
 import java.time.LocalDate;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -14,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-
 import com.capgemini.job_application.controllers.ApplicationController;
 import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.entities.Application;
@@ -46,7 +42,6 @@ public class ApplicationControllerTest {
         return new Application(100L, user, job, LocalDate.now(), "Pending");
     }
 
-    // 1. Test: Create Application
     @Test
     void testCreateApplication_Success() {
         Application application = createSampleApplication();
@@ -59,7 +54,6 @@ public class ApplicationControllerTest {
         assertEquals(application, response.getBody());
     }
 
-    // 2. Test: Create Application - Validation Error
     @Test
     void testCreateApplication_ValidationError() {
         Application application = createSampleApplication();
@@ -75,7 +69,6 @@ public class ApplicationControllerTest {
         assertTrue(thrown.getMessage().contains("Status is mandatory"));
     }
 
-    // 3. Test: Get All Applications
     @Test
     void testGetAllApplications() {
         List<Application> apps = List.of(createSampleApplication());
@@ -87,7 +80,6 @@ public class ApplicationControllerTest {
         assertEquals(apps, response.getBody());
     }
 
-    // 4. Test: Get Application by ID
     @Test
     void testGetApplicationById() {
         Application app = createSampleApplication();
@@ -99,7 +91,6 @@ public class ApplicationControllerTest {
         assertEquals(app, response.getBody());
     }
 
-    // 5. Test: Update Application
     @Test
     void testUpdateApplication() {
         Application application = createSampleApplication();
@@ -112,7 +103,6 @@ public class ApplicationControllerTest {
         assertEquals(application, response.getBody());
     }
 
-    // 6. Test: Patch Application
     @Test
     void testPatchApplication() {
         Application application = createSampleApplication();
@@ -125,7 +115,6 @@ public class ApplicationControllerTest {
         assertEquals(application, response.getBody());
     }
 
-    // 7. Test: Delete Application
     @Test
     void testDeleteApplication() {
         doNothing().when(applicationService).deleteApplication(100L);
@@ -136,7 +125,6 @@ public class ApplicationControllerTest {
         assertNull(response.getBody());
     }
 
-    // 8. Test: Find by User ID
     @Test
     void testFindUserUserId() {
         List<Application> apps = List.of(createSampleApplication());
@@ -148,7 +136,6 @@ public class ApplicationControllerTest {
         assertEquals(apps, response.getBody());
     }
 
-    // 9. Test: Find DTO by User ID
     @Test
     void testFindApplicationsByUserId() {
         ApplicationViewDto dto = new ApplicationViewDto();

@@ -1,20 +1,16 @@
 package com.capgemini.job_application;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import com.capgemini.job_application.entities.Qualification;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.exceptions.UserNotFoundException;
 import com.capgemini.job_application.repositories.QualificationRepository;
 import com.capgemini.job_application.repositories.UserRepository;
 import com.capgemini.job_application.services.QualificationServiceImpl;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

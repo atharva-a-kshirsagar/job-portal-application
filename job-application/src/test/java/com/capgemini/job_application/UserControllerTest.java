@@ -1,5 +1,4 @@
 package com.capgemini.job_application;
-
 import com.capgemini.job_application.controllers.UserController;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.UserService;
@@ -8,10 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-
 import java.util.Arrays;
 import java.util.List;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,10 +66,7 @@ public class UserControllerTest {
         assertEquals(201, response.getStatusCode().value());
         assertEquals("John Doe", response.getBody().getUserName());
     }
-
-    
-
-
+  
     @Test
     public void testDeleteUser() {
         doNothing().when(userService).deleteUser(1L);

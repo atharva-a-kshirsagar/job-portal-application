@@ -1,7 +1,6 @@
 package com.capgemini.job_application.exceptions;
 
-import java.time.LocalDateTime;
-import java.util.*;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

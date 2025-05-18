@@ -1,19 +1,15 @@
 package com.capgemini.job_application;
-
 import com.capgemini.job_application.controllers.JobController;
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.services.JobService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.time.LocalDate;
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

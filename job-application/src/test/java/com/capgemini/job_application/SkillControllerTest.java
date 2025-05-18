@@ -1,16 +1,12 @@
 package com.capgemini.job_application;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 import java.util.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-
 import com.capgemini.job_application.controllers.SkillController;
 import com.capgemini.job_application.entities.Skill;
 import com.capgemini.job_application.services.SkillService;
