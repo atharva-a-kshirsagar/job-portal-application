@@ -1,14 +1,24 @@
 package com.capgemini.job_application.services;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.job_application.dtos.ApplicationViewDto;
+import com.capgemini.job_application.dtos.CompanyDashBoardDto;
+import com.capgemini.job_application.dtos.JobDto;
+import com.capgemini.job_application.dtos.UserDashBoardDto;
+import com.capgemini.job_application.entities.Application;
+import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.exceptions.UserNotFoundException;
+import com.capgemini.job_application.repositories.ApplicationRepository;
+import com.capgemini.job_application.repositories.JobRepository;
 import com.capgemini.job_application.repositories.SkillRepository;
 import com.capgemini.job_application.repositories.UserRepository;
 
@@ -19,13 +29,17 @@ public class UserServiceImpl implements UserService{
 	
 	private final UserRepository userRepository;
 	private final SkillRepository skillRepository;
+	private final ApplicationRepository applicationRepository;
+	private final JobRepository jobRepository;
 	
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository, SkillRepository skillRepository) {
+	public UserServiceImpl(UserRepository userRepository, SkillRepository skillRepository, ApplicationRepository applicationRepository, JobRepository jobRepository) {
 		super();
 		this.userRepository = userRepository;
 		this.skillRepository = skillRepository;
+		this.applicationRepository = applicationRepository;
+		this.jobRepository = jobRepository;
 	}
 
 	@Override
@@ -110,5 +124,62 @@ public class UserServiceImpl implements UserService{
 		
 		return userRepository.save(user);
 	}
+
+	@Override
+	public List<JobDto> getJobDto(Long userId) {
+		// TODO Auto-generated method stub
+		return userRepository.findJobsToApply(userId);
+	}
+
+	@Override
+	public UserDashBoardDto getUserDashBoardDto(Long userId) {
+	    List<Application> applications = applicationRepository.findUserUserId(userId);
+
+	    Long appliedCount = (long) applications.size();
+	    Long shortListed = applications.stream()
+	        .filter(app -> app.getStatus().equalsIgnoreCase("SHORTLISTED"))
+	        .count();
+	    Long rejected = applications.stream()
+	        .filter(app -> app.getStatus().equalsIgnoreCase("REJECTED"))
+	        .count();
+	    Long offered = applications.stream()
+	        .filter(app -> app.getStatus().equalsIgnoreCase("OFFERED"))
+	        .count();
+
+	    List<JobDto> jobsToApply = getJobDto(userId);
+
+	    UserDashBoardDto userdto = new UserDashBoardDto();
+	    userdto.setAppliedCount(appliedCount);
+	    userdto.setShortListed(shortListed);
+	    userdto.setRejected(rejected);
+	    userdto.setOffered(offered);
+	    userdto.setJobsToApply(jobsToApply);
+
+	    return userdto;
+	}
+
+	@Override
+	public CompanyDashBoardDto getDashboardForCompany(Long companyId) {
+		List<Application> allApplications  = applicationRepository.findAll();
+
+ 	    Long totalJobs = (long) jobRepository.findByCompanyId(companyId).size();
+	    Long totalApplications =(long) applicationRepository.findByCompanyId(companyId).size();
+
+	    List<Object[]> genderCounts = applicationRepository.getGenderCounts(companyId);
+	    Long male = 0L, female = 0L;
+	    for (Object[] row : genderCounts) {
+	        String gender = (String) row[0];
+	        Long count = (Long) row[1];
+	        if ("male".equalsIgnoreCase(gender)) male = count;
+	        else if ("female".equalsIgnoreCase(gender)) female = count;
+	    }
+
+	    List<Map<Long, Long>> jobApplicationStats = applicationRepository.findApplicationByJob(companyId).stream()
+	    	    .map(row -> Map.of((Long) row[0], (Long) row[1]))
+	    	    .collect(Collectors.toList());
+	
+	    return new CompanyDashBoardDto(totalApplications, totalJobs, male, female, jobApplicationStats);
+	}
+
 	
 }

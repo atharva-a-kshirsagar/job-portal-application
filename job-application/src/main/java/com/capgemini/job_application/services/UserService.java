@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.capgemini.job_application.dtos.ApplicationViewDto;
+import com.capgemini.job_application.dtos.CompanyDashBoardDto;
+import com.capgemini.job_application.dtos.JobDto;
+import com.capgemini.job_application.dtos.UserDashBoardDto;
 import com.capgemini.job_application.entities.User;
 
 @Service
@@ -30,4 +34,9 @@ public interface UserService {
 	
 	User setUserSkill(Long userId , Long skillId);
 	
+	List<JobDto> getJobDto(Long userId);
+	
+	UserDashBoardDto getUserDashBoardDto(Long userId);
+	
+	public CompanyDashBoardDto getDashboardForCompany(Long companyId);
 }

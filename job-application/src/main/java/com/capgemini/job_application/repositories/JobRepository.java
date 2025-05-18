@@ -12,11 +12,14 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 	@Query	(value = "SELECT * FROM job WHERE job_id = ?1", nativeQuery = true)
 	List<Job> findByJobId(Long job_id);
 	
+	@Query(value = "SELECT * FROM job WHERE company_id = ?1", nativeQuery = true)
+	List<Job> findByCompanyId(Long companyId);
+
 	List<Job> findTop5ByOrderBySalaryDesc();
 
 	List<Job> findByCompanyCompanyId(Long companyId);
 	
-    @Query("SELECT j.company.companyDomain, COUNT(j) FROM Job j WHERE j.company.user.userId = :userId GROUP BY j.company.companyDomain")
-    List<Object[]> countJobsByCompanyDomainForUser(Long userId);
+  @Query("SELECT j.company.companyDomain, COUNT(j) FROM Job j WHERE j.company.user.userId = :userId GROUP BY j.company.companyDomain")
+  List<Object[]> countJobsByCompanyDomainForUser(Long userId);
 
 }
