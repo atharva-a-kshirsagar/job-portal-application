@@ -1,11 +1,11 @@
 package com.capgemini.job_application.entities;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -20,9 +20,6 @@ public class Company {
 	@Column(name = "company_id")
 	private Long companyId;
 
-//	@NotNull(message = "User ID is required")
-//	@Column(name = "user_id", nullable = false)
-//	private Long userId;
 
 	@NotBlank(message = "Company name is required")
 	@Column(name = "company_name", nullable = false, length = 100)
@@ -61,7 +58,6 @@ public class Company {
 		this.headOffice = headOffice;
 	}
 
-	// Getters and Setters
 
 	public Long getCompanyId() {
 		return companyId;

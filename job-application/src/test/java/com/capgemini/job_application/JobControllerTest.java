@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(JobController.class)
-public class JobControllerTest {
+class JobControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,8 +37,7 @@ public class JobControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-    private Company company;
-
+    
     private Job createSampleJob(Long id) {
     	Company company=new Company();
     	company.setCompanyId(100L);

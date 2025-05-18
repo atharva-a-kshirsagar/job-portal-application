@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CompanyController.class)
-public class CompanyControllerTest {
+class CompanyControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -93,19 +93,6 @@ public class CompanyControllerTest {
 				.andExpect(jsonPath("$.headOffice").value("NewHQ")).andDo(MockMvcResultHandlers.print());
 	}
 
-//	@Test
-//	@DisplayName("Should partially update company with PATCH")
-//	void shouldPatchCompany() throws Exception {
-//		Company patched = new Company(1L, 100L, "Capgemini", "Finance", "Pune");
-//
-//		Mockito.when(companyService.patchCompany(Mockito.eq(1L), Mockito.any())).thenReturn(patched);
-//
-//		mockMvc.perform(patch("/api/companies/1").contentType(MediaType.APPLICATION_JSON)
-//				.content("{\"companyDomain\":\"Finance\"}")).andExpect(status().isOk())
-//				.andExpect(jsonPath("$.companyDomain").value("Finance"))
-//				.andExpect(jsonPath("$.companyName").value("Capgemini")) // unchanged
-//				.andDo(MockMvcResultHandlers.print());
-//	}
 
 	@Test
 	@DisplayName("Should delete company")

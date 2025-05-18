@@ -1,11 +1,11 @@
 package com.capgemini.job_application.entities;
 
 import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -15,11 +15,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -36,7 +34,6 @@ public class Job {
 	@Column(name = "job_id")
 	private Long jobId;
 
-//	@NotNull(message ="Company ID is required")
 	@ManyToOne
 	@JoinColumn(name="company_id" , referencedColumnName = "company_id")
 	@JsonBackReference(value = "company-job")
@@ -76,22 +73,18 @@ public class Job {
 	public Job() {
 	}
 
-	public Job(Long jobId, @NotNull(message = "Company ID is required") Company company,
-			@NotBlank(message = "Job Title is required") String jobTitle,
-			@NotNull(message = "Salary is required") @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be greater than 0") Double salary,
-			@NotBlank(message = "Description is required") @Size(min = 10, message = "Description must be at least 10 characters") String description,
-			@NotBlank(message = "Job Location is required") String jobLocation,
-			@PastOrPresent(message = "Posting date cannot be in the future") LocalDate postingDate,
-			@Future(message = "Deadline date must be in the future") LocalDate deadlineDate) {
-		this.jobId = jobId;
-		this.company = company;
-		this.jobTitle = jobTitle;
-		this.salary = salary;
-		this.description = description;
-		this.jobLocation = jobLocation;
-		this.postingDate = postingDate;
-		this.deadlineDate = deadlineDate;
+	public Job(Long jobId, Company company, String jobTitle, Double salary,
+	           String description, String jobLocation, LocalDate postingDate, LocalDate deadlineDate) {
+	    this.jobId = jobId;
+	    this.company = company;
+	    this.jobTitle = jobTitle;
+	    this.salary = salary;
+	    this.description = description;
+	    this.jobLocation = jobLocation;
+	    this.postingDate = postingDate;
+	    this.deadlineDate = deadlineDate;
 	}
+
 
 	public Long getJobId() {
 		return jobId;

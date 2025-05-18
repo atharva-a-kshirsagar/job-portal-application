@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @WebMvcTest(ExperienceController.class)
-public class ExperienceControllerTest {
+class ExperienceControllerTest {
     private MockMvc mockMvc;
     private ExperienceService experienceService;
     private ObjectMapper objectMapper;
@@ -46,7 +46,6 @@ public class ExperienceControllerTest {
         Experience exp = new Experience();
         exp.setExperienceId(1L);
         exp.setUser(user);
-//        exp.setUserId(100L);
         exp.setRole("Developer");
         exp.setCompanyName("TechCorp");
         exp.setStartDate(LocalDate.of(2020, 1, 1));
@@ -66,7 +65,6 @@ public class ExperienceControllerTest {
         user.setUserId(101L);
         Experience input = new Experience();
         input.setUser(user);
-//        input.setUserId(101L);
         input.setRole("Tester");
         input.setCompanyName("Test Inc");
         input.setStartDate(LocalDate.of(2021, 1, 1));
@@ -75,7 +73,6 @@ public class ExperienceControllerTest {
         Experience saved = new Experience();
         saved.setExperienceId(1L);
         saved.setUser(user);
-//        saved.setUserId(101L);
         saved.setRole("Tester");
         saved.setCompanyName("Test Inc");
         saved.setStartDate(LocalDate.of(2021, 1, 1));
@@ -112,7 +109,6 @@ public class ExperienceControllerTest {
         user.setUserId(100L);
         Experience updatedInput = new Experience();
         updatedInput.setUser(user);
-//        updatedInput.setUserId(100L);
         updatedInput.setRole("Senior Developer");
         updatedInput.setCompanyName("NewTech");
         updatedInput.setStartDate(LocalDate.of(2020, 1, 1));
@@ -121,7 +117,6 @@ public class ExperienceControllerTest {
         Experience updatedOutput = new Experience();
         updatedOutput.setExperienceId(1L);
         updatedOutput.setUser(user);
-//        updatedOutput.setUserId(100L);
         updatedOutput.setRole("Senior Developer");
         updatedOutput.setCompanyName("NewTech");
         updatedOutput.setStartDate(LocalDate.of(2020, 1, 1));
