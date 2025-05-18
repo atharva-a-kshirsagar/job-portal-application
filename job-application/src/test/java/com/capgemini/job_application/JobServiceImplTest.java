@@ -28,7 +28,7 @@ import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.repositories.JobRepository;
 import com.capgemini.job_application.services.JobServiceImpl;
 
-public class JobServiceImplTest {
+class JobServiceImplTest {
 
 	 @Mock
 	    private JobRepository jobRepository;
@@ -37,15 +37,12 @@ public class JobServiceImplTest {
 	    private JobServiceImpl jobService;
 
 	    private Job job;
-	    private Company company;
 	    
 	    @Autowired
 	    public JobServiceImplTest(JobRepository jobRepository, JobServiceImpl jobService, Job job,Company company) {
-			super();
 			this.jobRepository = jobRepository;
 			this.jobService = jobService;
 			this.job = job;
-			this.company=company;
 		}
 
 		@BeforeEach

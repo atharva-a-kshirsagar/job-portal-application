@@ -2,15 +2,12 @@ package com.capgemini.job_application.entities;
 
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -29,8 +26,7 @@ public class Skill {
 	
 
 	@ManyToMany(mappedBy = "skills")
-//	@JsonBackReference(value = "user-skill")
-	private List<User> users = new ArrayList<User>();
+	private List<User> users = new ArrayList<>();
 		
 	public Skill() {
 
@@ -42,13 +38,6 @@ public class Skill {
 		this.skillName = skillName;
 	}
 	
-
-//	public Skill(Long skillId, String skillName, Set<User> users) {
-//		super();
-//		this.skillId = skillId;
-//		this.skillName = skillName;
-//		this.users = users;
-//	}
 
 	public Long getSkillId() {
 		return skillId;
@@ -65,14 +54,6 @@ public class Skill {
 	public void setSkillName(String skillName) {
 		this.skillName = skillName;
 	}
-
-//	public Set<User> getUsers() {
-//		return users;
-//	}
-//
-//	public void setUsers(Set<User> users) {
-//		this.users = users;
-//	}
 
 	@Override
 	public String toString() {
@@ -94,7 +75,6 @@ public class Skill {
 			return false;
 		Skill other = (Skill) obj;
 		return Objects.equals(skillId, other.skillId) && Objects.equals(skillName, other.skillName);
-				//&& Objects.equals(users, other.users);
 	}
 
     

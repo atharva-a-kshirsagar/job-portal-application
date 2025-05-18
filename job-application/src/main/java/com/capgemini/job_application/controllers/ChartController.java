@@ -1,9 +1,9 @@
 package com.capgemini.job_application.controllers;
 
 import com.capgemini.job_application.services.ChartService;
+
 import com.capgemini.job_application.dtos.ChartDTO;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

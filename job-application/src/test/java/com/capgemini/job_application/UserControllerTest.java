@@ -1,14 +1,15 @@
 package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.UserController;
+
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -24,7 +25,7 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private UserService userService;
 
     private final User user = new User(1L, "Alice", "alice@example.com", "1234567890", "password", "Address", "USER", 25, "Female");

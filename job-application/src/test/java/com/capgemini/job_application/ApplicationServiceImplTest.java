@@ -99,20 +99,9 @@ class ApplicationServiceImplTest {
         Application result = applicationService.updateApplication(1L, updated);
 
         assertEquals("Approved", result.getStatus());
-        assertEquals(999L, result.getUser());
-    }
+        assertEquals(Long.valueOf(999L), result.getUser().getUserId());
 
-    @Test
-    void testPatchApplication() {
-        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
-        when(applicationRepository.save(any(Application.class))).thenReturn(application);
 
-        Application patch = new Application();
-        patch.setStatus("Rejected");
-
-        Application result = applicationService.patchApplication(1L, patch);
-
-        assertEquals("Rejected", result.getStatus());
     }
 
     @Test

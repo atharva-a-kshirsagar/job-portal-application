@@ -1,9 +1,8 @@
 package com.capgemini.job_application.dtos;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +21,7 @@ public class ApplicationViewDto {
     private String jobLocation;
     private Double salary;
 
-    public ApplicationViewDto(Long applicationId, String status, java.sql.Date appliedDate, Long jobId,
+    public ApplicationViewDto(Long applicationId, String status, Date appliedDate, Long jobId,
                               String jobTitle, String companyName, String jobLocation, Double salary) {
         this.applicationId = applicationId;
         this.status = status;

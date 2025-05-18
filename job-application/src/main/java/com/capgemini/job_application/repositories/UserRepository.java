@@ -1,15 +1,13 @@
 package com.capgemini.job_application.repositories;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
 
-import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.dtos.JobDto;
-import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{

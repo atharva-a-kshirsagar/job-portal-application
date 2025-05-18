@@ -2,10 +2,8 @@ package com.capgemini.job_application.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.capgemini.job_application.entities.Job;
-import com.capgemini.job_application.repositories.JobRepository;
 
 
 public interface JobService {

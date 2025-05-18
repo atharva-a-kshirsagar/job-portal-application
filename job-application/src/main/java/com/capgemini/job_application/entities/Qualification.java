@@ -1,11 +1,7 @@
 package com.capgemini.job_application.entities;
 
 import java.time.LocalDate;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,10 +22,6 @@ public class Qualification {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "qualification_id")
 	private Long qualificationId;
-
-//	@NotNull(message = "UserId must not be blank")
-//	@Column(name = "user_id")
-//	private Long userId;
 
 	@NotNull(message = "Start date must not be blank")
 	@Column(name = "start_date")
@@ -55,7 +47,6 @@ public class Qualification {
 	@Column(name = "degree")
 	private String degree;
 	
-//	@NotNull(message = "UserId must not be blank")
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	@JsonBackReference(value = "user-qualification")
@@ -63,7 +54,6 @@ public class Qualification {
 
 	public Qualification(Long qualificationId, User user, LocalDate startDate, LocalDate endDate,
 			String qualificationType, String url, String institute, String degree) {
-		super();
 		this.qualificationId = qualificationId;
 		this.user = user;
 		this.startDate = startDate;

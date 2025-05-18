@@ -1,6 +1,7 @@
 package com.capgemini.job_application;
 
 import com.capgemini.job_application.entities.Experience;
+
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.repositories.ExperienceRepository;
 import com.capgemini.job_application.services.ExperienceServiceImpl;
@@ -13,8 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,15 +57,6 @@ class ExperienceServiceTest {
         exp.setEndDate(LocalDate.of(2022, 1, 1));
     }
 
-    @Test
-    void testGetExperienceByUserId() {
-//        List<Experience> experiences = Arrays.asList(exp);
-//        when(expRepo.findByUserId(100L)).thenReturn(experiences);
-//
-//        List<Experience> result = experienceService.getExperienceByUser_id(100L);
-//        assertEquals(1, result.size());
-//        assertEquals("Developer", result.get(0).getRole());
-    }
 
     @Test
     void testCreateExperience() {
@@ -84,12 +74,6 @@ class ExperienceServiceTest {
         verify(expRepo, times(1)).deleteById(1L);
     }
 
-    @Test
-    void testDeleteAllExperiencesByUserId() {
-//        doNothing().when(expRepo).deleteByUserId(100L);
-//        experienceService.deleteAllExperiencesByUserId(100L);
-//        verify(expRepo, times(1)).deleteByUserId(100L);
-    }
 
     @Test
     void testUpdateExperience() {

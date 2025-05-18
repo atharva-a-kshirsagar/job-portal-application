@@ -1,9 +1,10 @@
 package com.capgemini.job_application.services;
 
+import com.capgemini.job_application.dtos.ChartDTO;
 import com.capgemini.job_application.repositories.ApplicationRepository;
 import com.capgemini.job_application.repositories.JobRepository;
-import com.capgemini.job_application.dtos.ChartDTO;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,24 +20,21 @@ public class ChartService {
     }
 
     public List<ChartDTO> getApplicationsByLocationForUser(Long userId) {
-        return applicationRepository.countApplicationsByLocationForUser(userId)
-            .stream()
-            .map(obj -> new ChartDTO((String) obj[0], (Long) obj[1]))
-            .collect(Collectors.toList());
+        return mapToChartDTO(applicationRepository.countApplicationsByLocationForUser(userId));
     }
 
     public List<ChartDTO> getApplicationsByJobTitleForUser(Long userId) {
-        return applicationRepository.countApplicationsByJobTitleForUser(userId)
-            .stream()
-            .map(obj -> new ChartDTO((String) obj[0], (Long) obj[1]))
-            .collect(Collectors.toList());
+        return mapToChartDTO(applicationRepository.countApplicationsByJobTitleForUser(userId));
     }
 
     public List<ChartDTO> getJobsByCompanyDomainForUser(Long userId) {
-        return jobRepository.countJobsByCompanyDomainForUser(userId)
-            .stream()
+        return mapToChartDTO(jobRepository.countJobsByCompanyDomainForUser(userId));
+    }
+
+    private List<ChartDTO> mapToChartDTO(List<Object[]> rawData) {
+        return rawData.stream()
+            .filter(obj -> obj.length >= 2 && obj[0] instanceof String && obj[1] instanceof Long)
             .map(obj -> new ChartDTO((String) obj[0], (Long) obj[1]))
             .collect(Collectors.toList());
     }
-
 }

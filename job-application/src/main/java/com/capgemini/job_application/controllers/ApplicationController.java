@@ -2,6 +2,7 @@ package com.capgemini.job_application.controllers;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,14 +80,12 @@ public class ApplicationController {
     }
     
     @GetMapping("/applicant/{userId}")
-    public ResponseEntity<List<Application>> findUserUserId(Long userId) {
-		// TODO Auto-generated method stub
+    public ResponseEntity<List<Application>> findUserUserId(@PathVariable Long userId) {
 		return ResponseEntity.status(HttpStatus.OK).body(applicationService.findUserUserId(userId));
 	}
     
     @GetMapping("/viewDto/{userId}")
     public ResponseEntity<List<ApplicationViewDto>> findApplicationsByUserId(@PathVariable Long userId) {
-		// TODO Auto-generated method stub
 		return ResponseEntity.status(HttpStatus.OK).body(applicationService.findApplicationsByUserId(userId));
 	}
 }

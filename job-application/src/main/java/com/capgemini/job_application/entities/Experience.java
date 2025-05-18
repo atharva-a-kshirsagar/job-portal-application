@@ -1,12 +1,10 @@
 package com.capgemini.job_application.entities;
 
 import java.time.LocalDate;
+
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,9 +20,6 @@ public class Experience {
 	@Column(name = "experience_id")
 	private Long experienceId;
 
-//	@NotNull(message = "User id is mandatory")
-//	@Column(name = "user_id")
-//	private Long userId;
 
 	@NotBlank(message = "Role is mandatory")
 	@Column(name = "role")
@@ -42,7 +37,6 @@ public class Experience {
 	@Column(name = "end_date")
 	private LocalDate endDate;
 	
-//	@NotNull(message = "User id is mandatory")
 	@ManyToOne
 	@JoinColumn(name="user_id" ,referencedColumnName = "user_id")
 	@JsonBackReference(value="user-experience")
