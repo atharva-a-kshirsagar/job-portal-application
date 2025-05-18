@@ -85,5 +85,4 @@ public class CompanyController {
 	public ResponseEntity<CompanyDashBoardDto> getDashboardForCompany(@PathVariable Long companyId) {
 		return  ResponseEntity.status(HttpStatus.OK).body(userService.getDashboardForCompany(companyId));
 	}
-
 }

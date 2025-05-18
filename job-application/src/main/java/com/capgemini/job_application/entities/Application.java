@@ -46,7 +46,6 @@ public class Application{
 	@JsonBackReference(value = "job-application")
 	private Job job;
 
-
 	
 	public Application() {
 		super();

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.job_application.dtos.ApplicationInfoDto;
 import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.exceptions.ApplicationNotFoundException;
@@ -38,7 +39,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Application createApplication(Application applicant) {
-        log.info("Creating application for user: {}", applicant.getUser().getUserId());
+        log.info("Creating application for user ID: {}", 
+                 applicant.getUser() != null ? applicant.getUser().getUserId() : "null");
         return applicationRepository.save(applicant);
     }
 
@@ -99,6 +101,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     public List<ApplicationViewDto> findApplicationsByUserId(Long userId) {
         log.info("Fetching application DTOs for user ID: {}", userId);
         return applicationRepository.findApplicationsByUserId(userId);
+    }
+
+    @Override
+    public List<ApplicationInfoDto> getAllApplicationInfo() {
+        log.info("Fetching all application info DTOs");
+        return applicationRepository.getAllApplicationDetails();
     }
 
     private RuntimeException buildNotFoundException(Long id) {

@@ -2,6 +2,7 @@ package com.capgemini.job_application.services;
 
 import java.util.List;
 
+import com.capgemini.job_application.dtos.ApplicationInfoDto;
 import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.entities.Application;
 
@@ -22,4 +23,6 @@ public interface ApplicationService {
 	List<Application> findUserUserId(Long userId);
 	
 	List<ApplicationViewDto> findApplicationsByUserId(Long userId);
+	
+	List<ApplicationInfoDto> getAllApplicationInfo();
 }
