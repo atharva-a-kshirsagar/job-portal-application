@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.job_application.entities.Job;
+import com.capgemini.job_application.exceptions.JobNotFoundException;
 import com.capgemini.job_application.repositories.JobRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class JobServiceImpl implements JobService {
 	public Job getJobById(Long id) {
 		log.info("Fetching job with ID: {}", id);
 		return jobRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Job not found with id: " + id));
+				.orElseThrow(() -> new JobNotFoundException("Job not found with id: " + id));
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class JobServiceImpl implements JobService {
 	public Job updateJob(Long id, Job updated) {
 		log.info("Updating job with ID: {}", id);
 		Job existing = jobRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Job not found with Id:" + id));
+				.orElseThrow(() -> new JobNotFoundException("Job not found with Id:" + id));
 		existing.setCompany(updated.getCompany());
 		existing.setJobTitle(updated.getJobTitle());
 		existing.setDescription(updated.getDescription());
@@ -66,7 +67,7 @@ public class JobServiceImpl implements JobService {
 	public void deleteJob(Long id) {
 		log.info("Deleting job with ID: {}", id);
 		if (!jobRepository.existsById(id)) {
-			throw new RuntimeException("Cannot Delete. Booking not found with ID:" + id);
+			throw new JobNotFoundException("Cannot Delete. Booking not found with ID:" + id);
 		}
 		jobRepository.deleteById(id);
 	}
