@@ -1,6 +1,7 @@
 package com.capgemini.job_application.controllers;
 
 import com.capgemini.job_application.dtos.CompanyDashBoardDto;
+
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.services.CompanyService;
 import com.capgemini.job_application.services.UserService;
@@ -9,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -85,6 +85,4 @@ public class CompanyController {
 	public ResponseEntity<CompanyDashBoardDto> getDashboardForCompany(@PathVariable Long companyId) {
 		return  ResponseEntity.status(HttpStatus.OK).body(userService.getDashboardForCompany(companyId));
 	}
-
-
 }

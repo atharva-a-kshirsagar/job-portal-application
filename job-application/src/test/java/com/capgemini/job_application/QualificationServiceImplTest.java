@@ -100,7 +100,7 @@ class QualificationServiceImplTest {
 
     @Test
     void testDeleteQualification() {
-        when(qualificationRepository.existsById(1L)).thenReturn(true);  // ✅ Add this line
+        when(qualificationRepository.existsById(1L)).thenReturn(true); 
         doNothing().when(qualificationRepository).deleteById(1L);
 
         qualificationService.deleteQualification(1L);

@@ -1,6 +1,7 @@
 package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.ApplicationController;
+
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.entities.Job;
 import com.capgemini.job_application.entities.User;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,7 +40,6 @@ class ApplicationControllerTest {
 
     private Application application;
     
-    private Job job;
 
     @BeforeEach
     void setUp() {
@@ -111,24 +110,6 @@ class ApplicationControllerTest {
                 .andExpect(jsonPath("$.status").value("Approved"))
                 .andExpect(jsonPath("$.jobId").value(102L));
     }
-
-//    @Test
-//    void testPatchApplication() throws Exception {
-//        Application patchRequest = new Application();
-//        patchRequest.setStatus("Rejected");
-//
-//        Application patched = new Application();
-//        patched.setApplicationId(1L);
-//        patched.setStatus("Rejected");
-//
-//        when(applicationService.patchApplication(eq(1L), any(Application.class))).thenReturn(patched);
-//
-//        mockMvc.perform(patch("/api/application/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(patchRequest)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value("Rejected"));
-//    }
 
     @Test
     void testDeleteApplication() throws Exception {

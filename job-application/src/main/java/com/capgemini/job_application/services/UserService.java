@@ -1,11 +1,9 @@
 package com.capgemini.job_application.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.dtos.CompanyDashBoardDto;
 import com.capgemini.job_application.dtos.JobDto;
 import com.capgemini.job_application.dtos.UserDashBoardDto;

@@ -1,6 +1,7 @@
 package com.capgemini.job_application;
 
 import com.capgemini.job_application.controllers.SkillController;
+
 import com.capgemini.job_application.entities.Skill;
 import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.services.SkillService;
@@ -15,9 +16,8 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
-import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,12 +25,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(SkillController.class)
-public class SkillControllerTest {
+class SkillControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private SkillService skillService;
 
     private Skill skill;

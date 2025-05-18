@@ -1,7 +1,6 @@
 package com.capgemini.job_application.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.capgemini.job_application.entities.Company;
 

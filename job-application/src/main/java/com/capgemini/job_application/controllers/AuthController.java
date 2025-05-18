@@ -1,10 +1,10 @@
 package com.capgemini.job_application.controllers;
 
 import java.util.HashMap;
-import java.util.List;
+
+
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,9 +39,6 @@ public class AuthController {
 	UserService userService;
 	PasswordEncoder passwordEncoder;
 	JwtUtils jwtService;
-//	AuthorSe authorServices;
-//	BookServices bookServices;
-//	BorrowRecordServices borrowRecordServices;
 	
 	@GetMapping
 	public ResponseEntity<String> testAuth(){
@@ -52,16 +49,15 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<Map<String, String>> authenticateUser(@RequestBody LoginDto loginDto) {
-		System.out.println(loginDto);
+		
 	    Authentication authentication = authenticationManager
 	            .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUserEmail(), loginDto.getPassword()));
-	    System.out.println("after auth filter");
+	    
 	    
 	    
 	    if (authentication.isAuthenticated()) {
 	    	
 	        User user = userService.findByUserEmail(loginDto.getUserEmail());
-	        System.out.println("in signin fn"+user);
 	        Map<String, Object> claims = new HashMap<>();
 	        claims.put("email", user.getUserEmail());
 	        claims.put("usertype", user.getUserType());
@@ -69,14 +65,12 @@ public class AuthController {
 	        claims.put("sub", user.getUserName());
 	        String token = jwtService.generateToken(loginDto.getUserEmail(), claims);
 
-	        // Wrap token in JSON
 	        Map<String, String> response = new HashMap<>();
 	        response.put("token", token);
 
 	        return ResponseEntity.status(HttpStatus.OK).body(response);
 	    }
 
-	    // Wrap error message in JSON too (optional but good practice)
 	    Map<String, String> error = new HashMap<>();
 	    error.put("error", "You are not Authorized !!");
 	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
@@ -85,7 +79,6 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<User> registerUser(@RequestBody User user) {
-		System.out.println(user);
 		if (userService.existsByUserName(user.getUserName()) || userService.existsByUserEmail(user.getUserEmail()))
 			throw new UserAlreadyExistsException("Username or Email Exists !");
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
