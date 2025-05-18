@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.repositories.ApplicationRepository;
 
@@ -95,4 +96,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationRepository.deleteById(id);
         log.info("Application deleted with ID: {}", id);
     }
+
+	@Override
+	public List<Application> findUserUserId(Long userId) {
+		// TODO Auto-generated method stub
+		return applicationRepository.findUserUserId(userId);
+	}
+
+	@Override
+	public List<ApplicationViewDto> findApplicationsByUserId(Long userId) {
+		// TODO Auto-generated method stub
+		return applicationRepository.findApplicationsByUserId(userId);
+	}
 }
