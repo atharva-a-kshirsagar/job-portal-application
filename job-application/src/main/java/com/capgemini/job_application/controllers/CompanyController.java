@@ -41,6 +41,14 @@ public class CompanyController {
 		log.debug("Fetched company: {}", company);
 		return ResponseEntity.status(HttpStatus.OK).body(company);
 	}
+	
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
+		log.info("Received request to fetch company with user ID: {}", userId);
+		Company company = companyService.getCompanyByUserId(userId);
+		log.debug("Fetched company: {}", company);
+		return ResponseEntity.status(HttpStatus.OK).body(company);
+	}
 
 	@PostMapping
 	public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company, BindingResult result) {
@@ -65,14 +73,6 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(updated);
 	}
 
-//	@PatchMapping("/{id}")
-//	public ResponseEntity<Company> patchCompany(@PathVariable Long id, @Valid @RequestBody Company company) {
-//		log.info("Received request to patch company with ID: {}", id);
-//		Company patched = companyService.patchCompany(id, company);
-//		log.debug("Patched company: {}", patched);
-//		return ResponseEntity.status(HttpStatus.OK).body(patched);
-//	}
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
 		log.info("Received request to delete company with ID: {}", id);
@@ -80,9 +80,17 @@ public class CompanyController {
 		log.info("Company with ID {} successfully deleted", id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
-	
+
 	@GetMapping("/{companyId}/companyDashBoard")
 	public ResponseEntity<CompanyDashBoardDto> getDashboardForCompany(@PathVariable Long companyId) {
 		return  ResponseEntity.status(HttpStatus.OK).body(userService.getDashboardForCompany(companyId));
 	}
+
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
+	    return companyService.getCompanyByUserId(userId)
+	            .map(ResponseEntity::ok)
+	            .orElse(ResponseEntity.notFound().build());
+	}
+
 }

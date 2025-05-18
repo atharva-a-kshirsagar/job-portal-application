@@ -95,4 +95,15 @@ public class QualificationServiceImpl implements QualificationService{
 		qualificationRepository.deleteById(id);
 	}
 
+	@Override
+	public List<Qualification> findByUserId(Long userId) {
+		return qualificationRepository.findByUserId(userId);
+	}
+
+	@Override
+	public void deleteByUserId(Long userId) {
+		qualificationRepository.deleteByUserId(userId);
+		
+	}
+
 }
