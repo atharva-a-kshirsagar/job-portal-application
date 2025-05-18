@@ -1,6 +1,7 @@
 package com.capgemini.job_application.services;
 
 import com.capgemini.job_application.entities.Company;
+import com.capgemini.job_application.exceptions.CompanyNotFoundException;
 import com.capgemini.job_application.repositories.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
 		log.debug("Fetching company by ID: {}", id);
 		return companyRepository.findById(id).orElseThrow(() -> {
 			log.warn("Company not found with ID: {}", id);
-			return new RuntimeException("Company not found with ID: " + id);
+			return new CompanyNotFoundException("Company not found with ID: " + id);
 		});
 	}
 
@@ -86,7 +87,7 @@ public class CompanyServiceImpl implements CompanyService {
 		log.debug("Deleting company with ID: {}", id);
 		if (!companyRepository.existsById(id)) {
 			log.warn("Company not found with ID: {}", id);
-			throw new RuntimeException("Company not found with ID: " + id);
+			throw new CompanyNotFoundException("Company not found with ID: " + id);
 		}
 		companyRepository.deleteById(id);
 	}
