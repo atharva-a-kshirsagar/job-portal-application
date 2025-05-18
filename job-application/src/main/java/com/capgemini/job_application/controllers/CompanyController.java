@@ -35,6 +35,14 @@ public class CompanyController {
 		log.debug("Fetched company: {}", company);
 		return ResponseEntity.status(HttpStatus.OK).body(company);
 	}
+	
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
+		log.info("Received request to fetch company with user ID: {}", userId);
+		Company company = companyService.getCompanyByUserId(userId);
+		log.debug("Fetched company: {}", company);
+		return ResponseEntity.status(HttpStatus.OK).body(company);
+	}
 
 	@PostMapping
 	public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company, BindingResult result) {

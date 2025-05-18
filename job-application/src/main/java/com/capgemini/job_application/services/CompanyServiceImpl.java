@@ -2,8 +2,9 @@ package com.capgemini.job_application.services;
 
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.repositories.CompanyRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,12 +12,15 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
-	
+
+
 	private final CompanyRepository companyRepository;
 	
-	
+	@Autowired
+	public CompanyServiceImpl(CompanyRepository companyRepository) {
+		this.companyRepository = companyRepository;
+	}
 
 	@Override
 	public List<Company> getAllCompanies() {
@@ -88,7 +92,12 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public Optional<Company> getCompanyByUserId(Long userId) {
-        return companyRepository.findByUserId(userId);
-    }
+	public Company getCompanyByUserId(Long userId) {
+		log.debug("Fetching company by user ID: {}", userId);
+		return companyRepository.findByUserId(userId).orElseThrow(() -> {
+			log.warn("Company not found with ID: {}", userId);
+			return new RuntimeException("Company not found with user ID: " + userId);
+		});
+	}
+
 }

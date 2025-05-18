@@ -18,7 +18,8 @@ public interface CompanyService {
 	Company patchCompany(Long id, Company company);
 
 	void deleteCompany(Long id);
-	
-	Optional<Company> getCompanyByUserId(Long userId);
+
+	Company getCompanyByUserId(Long userId);
+
 
 }
