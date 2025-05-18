@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.capgemini.job_application.entities.Skill;
+import com.capgemini.job_application.exceptions.SkillNotFoundException;
 import com.capgemini.job_application.repositories.SkillRepository;
 import com.capgemini.job_application.services.SkillServiceImpl;
 
@@ -77,6 +78,18 @@ public class SkillServiceImplTest {
         Skill result = skillService.updateSkill(1L, newSkill);
 
         assertEquals("Advanced Java", result.getSkillName());
+    }
+    
+    @Test
+    void testUpdateSkill_SkillNotFoundException() {
+        Long skillId = 99L;
+        Skill newSkill = new Skill(null, "Unknown");
+
+        when(skillRepository.findById(skillId)).thenReturn(Optional.empty());
+
+        assertThrows(SkillNotFoundException.class, () -> {
+            skillService.updateSkill(skillId, newSkill);
+        });
     }
 
     @Test

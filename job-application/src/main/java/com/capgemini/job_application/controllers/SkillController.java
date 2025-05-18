@@ -31,6 +31,7 @@ public class SkillController {
    			
     	if(result.hasErrors()) {
     		log.error("Error found in create skill. invalid data");
+
     		throw new IllegalArgumentException(result.getAllErrors().toString());
     	}
     	log.info("New Skill Created");
@@ -42,7 +43,7 @@ public class SkillController {
     public ResponseEntity<Skill> getSkillById(@PathVariable Long skillId) {
         Skill skill = skillService.getSkillById(skillId);
         if (skill == null) {
-        	log.warn("Skill with ID {} not found for update", skillId);
+        	log.warn("Skill with ID {} not found ", skillId);
             return ResponseEntity.notFound().build();
         }
         log.info("Skill with ID {} retrieved successfully", skillId);
@@ -59,7 +60,7 @@ public class SkillController {
     public ResponseEntity<Skill> updateSkill(@PathVariable Long skillId,@Valid @RequestBody Skill skill,BindingResult result) {
     	if(result.hasErrors()) {
     		log.error("Error found in updating skill. invalid data");
-    		throw new IllegalArgumentException("Invalid Data Found!!");
+    		throw new IllegalArgumentException(result.getFieldErrors().toString());
     	}
     	Skill updatedSkill = skillService.updateSkill(skillId, skill);
         if (updatedSkill == null) {

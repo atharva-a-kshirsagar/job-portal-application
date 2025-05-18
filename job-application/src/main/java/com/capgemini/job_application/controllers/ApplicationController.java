@@ -31,7 +31,7 @@ public class ApplicationController {
     public ResponseEntity<Application> createApplication(@Valid @RequestBody Application application, BindingResult result) {
         if (result.hasErrors()) {
             log.error("Invalid application data: {}", result.getAllErrors());
-            throw new IllegalArgumentException("Invalid Data Found");
+            throw new IllegalArgumentException(result.getFieldErrors().toString());
         }
         log.info("Creating new application: {}", application);
         Application created = applicationService.createApplication(application);
@@ -54,7 +54,7 @@ public class ApplicationController {
     public ResponseEntity<Application> updateApplication(@PathVariable Long id, @Valid @RequestBody Application application, BindingResult result) {
         if (result.hasErrors()) {
             log.error("Invalid application update data: {}", result.getAllErrors());
-            throw new IllegalArgumentException("Invalid Data Found");
+            throw new IllegalArgumentException(result.getFieldErrors().toString());
         }
         log.info("Updating application with ID: {}", id);
         return ResponseEntity.status(HttpStatus.OK).body(applicationService.updateApplication(id, application));
@@ -64,7 +64,7 @@ public class ApplicationController {
     public ResponseEntity<Application> patchApplication(@PathVariable Long id, @Valid @RequestBody Application application, BindingResult result) {
         if (result.hasErrors()) {
             log.error("Invalid patch data: {}", result.getAllErrors());
-            throw new IllegalArgumentException("Invalid Data Found");
+            throw new IllegalArgumentException(result.getFieldErrors().toString());
         }
         log.info("Patching application with ID: {}", id);
         return ResponseEntity.status(HttpStatus.OK).body(applicationService.patchApplication(id, application));

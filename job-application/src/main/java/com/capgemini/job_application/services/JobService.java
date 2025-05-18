@@ -15,7 +15,5 @@ public interface JobService {
 
 	Job updateJob(Long id, Job job);
 
-	Job patchJob(Long id, Job job);
-
 	void deleteJob(Long id);
 }
