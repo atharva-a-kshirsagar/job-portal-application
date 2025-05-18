@@ -1,119 +1,105 @@
 package com.capgemini.job_application;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
 import com.capgemini.job_application.controllers.CompanyController;
 import com.capgemini.job_application.entities.Company;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.CompanyService;
-import com.capgemini.job_application.services.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(CompanyController.class)
 class CompanyControllerTest {
 
-    @Mock
-    private CompanyService companyService;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Mock
-    private UserService userService;
+	@MockitoBean
+	private CompanyService companyService;
 
-    @InjectMocks
-    private CompanyController companyController;
+	@Test
+	@DisplayName("Should create a new company")
+	void shouldCreateCompany() throws Exception {
+		User user=new User();
+		user.setUserId(100L);
+		Company company = new Company(1L, user, "Capgemini", "IT", "Pune");
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+		Mockito.when(companyService.createCompany(Mockito.any())).thenReturn(company);
 
-    @Test
-    @DisplayName("Should create a new company")
-    void shouldCreateCompany() {
-        User user = new User();
-        user.setUserId(100L);
-        Company company = new Company(1L, user, "Capgemini", "IT", "Pune");
+		mockMvc.perform(post("/api/companies").contentType(MediaType.APPLICATION_JSON).content(
+				"{\"userId\":100,\"companyName\":\"Capgemini\",\"companyDomain\":\"IT\",\"headOffice\":\"Pune\"}"))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.companyName").value("Capgemini"))
+				.andExpect(jsonPath("$.companyDomain").value("IT")).andExpect(jsonPath("$.headOffice").value("Pune"))
+				.andDo(MockMvcResultHandlers.print());
+	}
 
-        when(companyService.createCompany(any())).thenReturn(company);
+	@Test
+	@DisplayName("Should get company by ID")
+	void shouldGetCompanyById() throws Exception {
+		User user=new User();
+		user.setUserId(101L);
+		Company company = new Company(1L, user, "Infosys", "IT", "Bangalore");
 
-        // Simulate valid input (BindingResult has no errors)
-        BindingResult bindingResult = Mockito.mock(BindingResult.class);
-        Mockito.when(bindingResult.hasErrors()).thenReturn(false);
+		Mockito.when(companyService.getCompanyById(1L)).thenReturn(company);
 
-        ResponseEntity<Company> response = companyController.createCompany(company, bindingResult);
+		mockMvc.perform(get("/api/companies/1")).andExpect(status().isOk())
+				.andExpect(jsonPath("$.companyName").value("Infosys"))
+				.andExpect(jsonPath("$.headOffice").value("Bangalore")).andDo(MockMvcResultHandlers.print());
+	}
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCompanyName()).isEqualTo("Capgemini");
-    }
+	@Test
+	@DisplayName("Should return all companies")
+	void shouldGetAllCompanies() throws Exception {
+		User user1=new User();
+		user1.setUserId(1L);
+		User user2=new User();
+		user2.setUserId(2L);
+		Company c1 = new Company(1L, user1, "A", "X", "Y");
+		Company c2 = new Company(2L, user2, "B", "Y", "Z");
 
-    @Test
-    @DisplayName("Should get company by ID")
-    void shouldGetCompanyById() {
-        User user = new User();
-        user.setUserId(101L);
-        Company company = new Company(1L, user, "Infosys", "IT", "Bangalore");
+		Mockito.when(companyService.getAllCompanies()).thenReturn(List.of(c1, c2));
 
-        when(companyService.getCompanyById(1L)).thenReturn(company);
+		mockMvc.perform(get("/api/companies")).andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2))
+				.andExpect(jsonPath("$[0].companyName").value("A")).andExpect(jsonPath("$[1].companyDomain").value("Y"))
+				.andDo(MockMvcResultHandlers.print());
+	}
 
-        ResponseEntity<Company> response = companyController.getCompany(1L);
+	@Test
+	@DisplayName("Should update company with PUT")
+	void shouldUpdateCompany() throws Exception {
+		User user=new User();
+		user.setUserId(200L);
+		Company updated = new Company(1L, user, "UpdatedCo", "NewDomain", "NewHQ");
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCompanyName()).isEqualTo("Infosys");
-        assertThat(response.getBody().getHeadOffice()).isEqualTo("Bangalore");
-    }
+		Mockito.when(companyService.updateCompany(Mockito.eq(1L), Mockito.any())).thenReturn(updated);
 
-    @Test
-    @DisplayName("Should return all companies")
-    void shouldGetAllCompanies() {
-        User user1 = new User();
-        user1.setUserId(1L);
-        User user2 = new User();
-        user2.setUserId(2L);
-        Company c1 = new Company(1L, user1, "A", "X", "Y");
-        Company c2 = new Company(2L, user2, "B", "Y", "Z");
+		mockMvc.perform(put("/api/companies/1").contentType(MediaType.APPLICATION_JSON).content(
+				"{\"userId\":200,\"companyName\":\"UpdatedCo\",\"companyDomain\":\"NewDomain\",\"headOffice\":\"NewHQ\"}"))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.companyName").value("UpdatedCo"))
+				.andExpect(jsonPath("$.companyDomain").value("NewDomain"))
+				.andExpect(jsonPath("$.headOffice").value("NewHQ")).andDo(MockMvcResultHandlers.print());
+	}
 
-        when(companyService.getAllCompanies()).thenReturn(List.of(c1, c2));
 
-        ResponseEntity<List<Company>> response = companyController.getAllCompanies();
+	@Test
+	@DisplayName("Should delete company")
+	void shouldDeleteCompany() throws Exception {
+		Mockito.doNothing().when(companyService).deleteCompany(1L);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(2);
-        assertThat(response.getBody().get(0).getCompanyName()).isEqualTo("A");
-        assertThat(response.getBody().get(1).getCompanyDomain()).isEqualTo("Y");
-    }
-
-    @Test
-    @DisplayName("Should update company with PUT")
-    void shouldUpdateCompany() {
-        User user = new User();
-        user.setUserId(200L);
-        Company updated = new Company(1L, user, "UpdatedCo", "NewDomain", "NewHQ");
-
-        when(companyService.updateCompany(eq(1L), any())).thenReturn(updated);
-
-        BindingResult bindingResult = Mockito.mock(BindingResult.class);
-        Mockito.when(bindingResult.hasErrors()).thenReturn(false);
-
-        ResponseEntity<Company> response = companyController.updateCompany(1L, updated, bindingResult);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getCompanyName()).isEqualTo("UpdatedCo");
-        assertThat(response.getBody().getCompanyDomain()).isEqualTo("NewDomain");
-    }
-
-    @Test
-    @DisplayName("Should delete company")
-    void shouldDeleteCompany() {
-        doNothing().when(companyService).deleteCompany(1L);
-
-        ResponseEntity<Void> response = companyController.deleteCompany(1L);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
+		mockMvc.perform(delete("/api/companies/1")).andExpect(status().isNoContent())
+				.andDo(MockMvcResultHandlers.print());
+	}
 }

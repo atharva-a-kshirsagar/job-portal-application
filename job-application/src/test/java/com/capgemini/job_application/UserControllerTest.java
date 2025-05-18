@@ -1,79 +1,140 @@
 package com.capgemini.job_application;
+
 import com.capgemini.job_application.controllers.UserController;
+
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import java.util.Arrays;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.List;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-public class UserControllerTest {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-    @Mock
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
     private UserService userService;
 
-    @InjectMocks
-    private UserController userController;
+    private final User user = new User(1L, "Alice", "alice@example.com", "1234567890", "password", "Address", "USER", 25, "Female");
 
-    @Mock
-    private BindingResult bindingResult;
+    @Test
+    void getAll_shouldReturnUserList() throws Exception {
+        Mockito.when(userService.getAllUsers()).thenReturn(List.of(user));
 
-    private User sampleUser;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-
-        sampleUser = new User(1L, "John Doe", "john@example.com", "1234567890",
-                "password", "123 Main St", "USER", 25, "Male");
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userName").value("Alice"))
+                .andExpect(jsonPath("$[0].userEmail").value("alice@example.com"));
     }
 
     @Test
-    public void testGetAllUsers() {
-        List<User> users = Arrays.asList(sampleUser);
-        when(userService.getAllUsers()).thenReturn(users);
+    void getById_shouldReturnUserIfExists() throws Exception {
+        Mockito.when(userService.getUserById(1L)).thenReturn(user);
 
-        ResponseEntity<List<User>> response = userController.getAllUsers();
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().size());
-        assertEquals("John Doe", response.getBody().get(0).getUserName());
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userName").value("Alice"));
     }
 
     @Test
-    public void testGetUserById() {
-        when(userService.getUserById(1L)).thenReturn(sampleUser);
+    void getById_shouldReturnErrorIfNotFound() throws Exception {
+        Mockito.when(userService.getUserById(2L)).thenThrow(new RuntimeException("No user found with ID: 2"));
 
-        ResponseEntity<User> response = userController.getUser(1L);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals("john@example.com", response.getBody().getUserEmail());
+        mockMvc.perform(get("/api/users/2"))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
-    public void testCreateUser() {
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(userService.createUser(any(User.class))).thenReturn(sampleUser);
+    void createUser_shouldCreateAndReturnUser() throws Exception {
+        Mockito.when(userService.createUser(any(User.class))).thenReturn(user);
 
-        ResponseEntity<User> response = userController.createUser(sampleUser, bindingResult);
+        String userJson = """
+                {
+                  "userName": "Alice",
+                  "userEmail": "alice@example.com",
+                  "phone": "1234567890",
+                  "password": "A@1password",
+                  "address": "Address",
+                  "userType": "USER",
+                  "age": 25,
+                  "gender": "Female"
+                }
+                """;
 
-        assertEquals(201, response.getStatusCode().value());
-        assertEquals("John Doe", response.getBody().getUserName());
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userName").value("Alice"));
     }
-  
+
     @Test
-    public void testDeleteUser() {
-        doNothing().when(userService).deleteUser(1L);
+    void updateUser_shouldUpdateAndReturnUser() throws Exception {
+        User updated = new User(1L, "Bob", "bob@example.com", "0987654321", "newpass", "New Address", "ADMIN", 30, "Male");
+        Mockito.when(userService.updateUser(eq(1L), any(User.class))).thenReturn(updated);
 
-        ResponseEntity<Void> response = userController.deleteUser(1L);
+        String userJson = """
+                {
+                  "userName": "Bob",
+                  "userEmail": "bob@example.com",
+                  "phone": "0987654321",
+                  "password": "newN@pass123",
+                  "address": "New Address",
+                  "userType": "ADMIN",
+                  "age": 30,
+                  "gender": "Male"
+                }
+                """;
 
-        assertEquals(204, response.getStatusCodeValue());
-        verify(userService, times(1)).deleteUser(1L);
+        mockMvc.perform(put("/api/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isCreated())
+
+                .andExpect(jsonPath("$.userName").value("Bob"));
+    }
+    
+    @Test
+    void createUser_shouldReturnBadRequestForInvalidPassword() throws Exception {
+        String invalidUserJson = """
+                {
+                  "userName": "Parikshit",
+                  "userEmail": "parikshit.jadhav@example.com",
+                  "phone": "1758385987",
+                  "password": "MySecure123",
+                  "address": "Pune",
+                  "userType": "applicant",
+                  "age": 25,
+                  "gender": "Male"
+                }
+                """;
+
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidUserJson))
+                .andExpect(status().isBadRequest());
+    
+    }
+
+    @Test
+    void deleteUser_shouldReturnNoContent() throws Exception {
+        Mockito.doNothing().when(userService).deleteUser(1L);
+
+        mockMvc.perform(delete("/api/users/1"))
+                .andExpect(status().isNoContent());
     }
 }
+
