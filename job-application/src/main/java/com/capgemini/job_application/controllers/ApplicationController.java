@@ -41,13 +41,13 @@ public class ApplicationController {
     @GetMapping
     public ResponseEntity<List<Application>> getAllApplications() {
         log.info("Fetching all applications");
-        return ResponseEntity.status(HttpStatus.FOUND).body(applicationService.getAllApplication());
+        return ResponseEntity.status(HttpStatus.OK).body(applicationService.getAllApplication());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Application> getApplicationById(@PathVariable Long id) {
         log.info("Fetching application with ID: {}", id);
-        return ResponseEntity.status(HttpStatus.FOUND).body(applicationService.getApplicationById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(applicationService.getApplicationById(id));
     }
 
     @PutMapping("/{id}")
@@ -79,7 +79,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/applicant/{userId}")
-    public ResponseEntity<List<Application>> findUserUserId(Long userId) {
+    public ResponseEntity<List<Application>> findUserUserId(@PathVariable Long userId) {
 		// TODO Auto-generated method stub
 		return ResponseEntity.status(HttpStatus.OK).body(applicationService.findUserUserId(userId));
 	}

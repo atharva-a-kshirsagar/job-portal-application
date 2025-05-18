@@ -8,6 +8,8 @@ import com.capgemini.job_application.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompanyController {
 
-	
+	@Autowired
 	private final CompanyService companyService;
 	private final UserService userService;
+	
 
 	@GetMapping
 	public ResponseEntity<List<Company>> getAllCompanies() {
@@ -86,11 +89,12 @@ public class CompanyController {
 		return  ResponseEntity.status(HttpStatus.OK).body(userService.getDashboardForCompany(companyId));
 	}
 
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
-	    return companyService.getCompanyByUserId(userId)
-	            .map(ResponseEntity::ok)
-	            .orElse(ResponseEntity.notFound().build());
-	}
+
+//	@GetMapping("/user/{userId}")
+//	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
+//	    return companyService.getCompanyByUserId(userId)
+//	            .map(ResponseEntity::ok)
+//	            .orElse(ResponseEntity.notFound().build());
+//	}
 
 }
