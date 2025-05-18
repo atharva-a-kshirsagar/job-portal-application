@@ -82,4 +82,12 @@ public class CompanyController {
 		log.info("Company with ID {} successfully deleted", id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
+	
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
+	    return companyService.getCompanyByUserId(userId)
+	            .map(ResponseEntity::ok)
+	            .orElse(ResponseEntity.notFound().build());
+	}
+
 }

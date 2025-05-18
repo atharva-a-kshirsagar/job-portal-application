@@ -89,5 +89,17 @@ public class QualificationController {
 		log.info("Qualification with ID {} successfully patched", id);
 		return ResponseEntity.status(HttpStatus.OK).body(qualificationService.patchQualification(id, qualification));
 	}
+	
+	@GetMapping("user/{userId}")
+	public ResponseEntity<List<Qualification>> getQualificationsByUserId(@PathVariable Long userId) {
+	    List<Qualification> qualifications = qualificationService.findByUserId(userId);
+	    return ResponseEntity.ok(qualifications);
+	}
+
+	 @DeleteMapping("/user/{userId}")
+	    public ResponseEntity<String> deleteQualificationsByUserId(@PathVariable Long userId) {
+	        qualificationService.deleteByUserId(userId);
+	        return ResponseEntity.ok("All qualifications deleted for userId: " + userId);
+	    }
 
 }

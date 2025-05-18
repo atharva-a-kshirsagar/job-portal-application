@@ -8,16 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 public class CompanyServiceImpl implements CompanyService {
 
-	private CompanyRepository companyRepository;
+
+	private final CompanyRepository companyRepository;
 	
 	@Autowired
 	public CompanyServiceImpl(CompanyRepository companyRepository) {
-		super();
 		this.companyRepository = companyRepository;
 	}
 
@@ -98,4 +99,5 @@ public class CompanyServiceImpl implements CompanyService {
 			return new RuntimeException("Company not found with user ID: " + userId);
 		});
 	}
+
 }
