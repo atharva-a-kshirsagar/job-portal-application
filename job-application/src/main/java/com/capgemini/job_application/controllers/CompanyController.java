@@ -86,11 +86,5 @@ public class CompanyController {
 		return  ResponseEntity.status(HttpStatus.OK).body(userService.getDashboardForCompany(companyId));
 	}
 
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<Company> getCompanyByUserId(@PathVariable Long userId) {
-	    return companyService.getCompanyByUserId(userId)
-	            .map(ResponseEntity::ok)
-	            .orElse(ResponseEntity.notFound().build());
-	}
 
 }

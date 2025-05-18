@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import com.capgemini.job_application.dtos.ApplicationInfoDto;
 import com.capgemini.job_application.dtos.ApplicationViewDto;
 import com.capgemini.job_application.entities.Application;
 import com.capgemini.job_application.services.ApplicationService;
@@ -15,6 +16,7 @@ import com.capgemini.job_application.services.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/api/application")
 @Slf4j
@@ -51,7 +53,7 @@ public class ApplicationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Application> updateApplication(@PathVariable Long id, @Valid @RequestBody Application application, BindingResult result) {
+    public ResponseEntity<Application> updateApplication(@PathVariable Long id,  @RequestBody Application application, BindingResult result) {
         if (result.hasErrors()) {
             log.error("Invalid application update data: {}", result.getAllErrors());
             throw new IllegalArgumentException(result.getFieldErrors().toString());
@@ -80,13 +82,17 @@ public class ApplicationController {
     
     @GetMapping("/applicant/{userId}")
     public ResponseEntity<List<Application>> findUserUserId(Long userId) {
-		// TODO Auto-generated method stub
 		return ResponseEntity.status(HttpStatus.OK).body(applicationService.findUserUserId(userId));
 	}
     
     @GetMapping("/viewDto/{userId}")
     public ResponseEntity<List<ApplicationViewDto>> findApplicationsByUserId(@PathVariable Long userId) {
-		// TODO Auto-generated method stub
 		return ResponseEntity.status(HttpStatus.OK).body(applicationService.findApplicationsByUserId(userId));
 	}
+    
+    @GetMapping("/applicationInfo")
+    public ResponseEntity<List<ApplicationInfoDto>> getApplicationInfo() {
+        return ResponseEntity.status(200).body(applicationService.getAllApplicationInfo());
+    }
+
 }
