@@ -15,7 +15,6 @@ import com.capgemini.job_application.services.JobService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/jobs")
 @Slf4j
