@@ -3,10 +3,8 @@ package com.capgemini.job_application.services;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.capgemini.job_application.dtos.CompanyDashBoardDto;
 import com.capgemini.job_application.dtos.JobDto;
 import com.capgemini.job_application.dtos.UserDashBoardDto;
@@ -29,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final SkillRepository skillRepository;
     private final ApplicationRepository applicationRepository;
     private final JobRepository jobRepository;
-
+    private static final String ACTION_1 = "User not found with ID: ";
     @Autowired
     public UserServiceImpl(UserRepository userRepository, SkillRepository skillRepository, 
                            ApplicationRepository applicationRepository, JobRepository jobRepository) {
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("User not found with ID: {}", id);
-                    return new UserNotFoundException("User not found with ID: " + id);
+                    return new UserNotFoundException(ACTION_1 + id);
                 });
     }
 
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         log.debug("Deleting user by ID: {}", id);
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+                .orElseThrow(() -> new UserNotFoundException(ACTION_1 + id));
         userRepository.delete(user);
         log.info("User deleted with ID: {}", id);
     }
@@ -73,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(Long id, User user) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+                .orElseThrow(() -> new UserNotFoundException(ACTION_1 + id));
 
         existingUser.setUserName(user.getUserName());
         existingUser.setPhone(user.getPhone());
@@ -117,7 +115,7 @@ public class UserServiceImpl implements UserService {
     public User setUserSkill(Long userId, Long skillId) {
         log.debug("Setting skill with ID: {} for user with ID: {}", skillId, userId);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(ACTION_1 + userId));
 
         user.getSkills().add(
                 skillRepository.findById(skillId)
@@ -171,12 +169,15 @@ public class UserServiceImpl implements UserService {
         long totalApplications = applicationRepository.findByCompanyId(companyId).size();
 
         List<Object[]> genderCounts = applicationRepository.getGenderCounts(companyId);
-        long male = 0L, female = 0L;
+        long male = 0L;
+        long female = 0L;
         for (Object[] row : genderCounts) {
             String gender = (String) row[0];
             Long count = (Long) row[1];
-            if ("male".equalsIgnoreCase(gender)) male = count;
-            else if ("female".equalsIgnoreCase(gender)) female = count;
+            if ("male".equalsIgnoreCase(gender)) 
+            	male = count;
+            else if ("female".equalsIgnoreCase(gender)) 
+            	female = count;
         }
 
         List<Map<Long, Long>> jobApplicationStats = applicationRepository.findApplicationByJob(companyId).stream()

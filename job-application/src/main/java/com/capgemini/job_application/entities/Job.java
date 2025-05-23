@@ -1,9 +1,7 @@
 package com.capgemini.job_application.entities;
 
 import java.time.LocalDate;
-
-import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,9 +22,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "job")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Job {
 
 	@Id
@@ -67,24 +69,8 @@ public class Job {
 	
 	@OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference(value = "job-application")
-	private List<Application> applications;
+	private Set<Application> applications;
  
-
-	public Job() {
-	}
-
-	public Job(Long jobId, Company company, String jobTitle, Double salary,
-	           String description, String jobLocation, LocalDate postingDate, LocalDate deadlineDate) {
-	    this.jobId = jobId;
-	    this.company = company;
-	    this.jobTitle = jobTitle;
-	    this.salary = salary;
-	    this.description = description;
-	    this.jobLocation = jobLocation;
-	    this.postingDate = postingDate;
-	    this.deadlineDate = deadlineDate;
-	}
-
 
 	public Long getJobId() {
 		return jobId;
@@ -150,6 +136,14 @@ public class Job {
 	public void setDeadlineDate(LocalDate deadlineDate) {
 		this.deadlineDate = deadlineDate;
 	}
+	
+	public Set<Application> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(Set<Application> applications) {
+		this.applications = applications;
+	}
 
 	@Override
 	public String toString() {
@@ -157,21 +151,5 @@ public class Job {
 				+ ", description=" + description + ", jobLocation=" + jobLocation + ", postingDate=" + postingDate
 				+ ", deadlineDate=" + deadlineDate + "]";
 	}
-	
-	
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Job job = (Job) o;
-		return Objects.equals(jobId, job.jobId);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(jobId);
-	}
-
-	
 	
 }
