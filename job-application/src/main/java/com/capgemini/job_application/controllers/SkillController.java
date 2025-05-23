@@ -1,22 +1,21 @@
 package com.capgemini.job_application.controllers;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.capgemini.job_application.entities.Skill;
 import com.capgemini.job_application.services.SkillService;
-
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/skills")
+@PreAuthorize("hasRole('USER') or hasRole('COMPANY')")
 public class SkillController {
     private SkillService skillService;
 

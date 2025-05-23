@@ -1,13 +1,9 @@
 package com.capgemini.job_application.entities;
 
-import java.util.ArrayList;
-
-import java.util.List;
-import java.util.Objects;
-
+import java.util.HashSet;
+import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -42,7 +38,7 @@ public class Company {
 	
 	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference(value = "company-job")
-	private List<Job> jobs = new ArrayList<>();
+	private Set<Job> jobs = new HashSet<>();
 
 
  	
@@ -75,11 +71,11 @@ public class Company {
 		this.user = user;
 	}
 
-	public List<Job> getJobs() {
+	public Set<Job> getJobs() {
 		return jobs;
 	}
 
-	public void setJobs(List<Job> jobs) {
+	public void setJobs(Set<Job> jobs) {
 		this.jobs = jobs;
 	}
 
@@ -111,19 +107,6 @@ public class Company {
 	public String toString() {
 		return "Company [companyId=" + companyId + ", companyName=" + companyName
 				+ ", companyDomain=" + companyDomain + ", headOffice=" + headOffice + "]";
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Company company = (Company) o;
-		return Objects.equals(companyId, company.companyId);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(companyId);
 	}
 
 }

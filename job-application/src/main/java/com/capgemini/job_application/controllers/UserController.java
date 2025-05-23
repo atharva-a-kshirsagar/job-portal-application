@@ -1,12 +1,10 @@
 package com.capgemini.job_application.controllers;
 
-import java.util.List;
-
-import java.util.Map;
-
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
-
 import com.capgemini.job_application.dtos.UserDashBoardDto;
 import com.capgemini.job_application.entities.User;
 import com.capgemini.job_application.services.UserService;
@@ -27,7 +24,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("api/users")
 @Slf4j 
-//@PreAuthorize("hasRole('USER') or hasRole('COMPANY')")
+@PreAuthorize("hasRole('USER') or hasRole('COMPANY')")
 public class UserController {
 	private UserService userService;
 

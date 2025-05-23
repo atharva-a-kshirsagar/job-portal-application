@@ -13,9 +13,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name="qualification")
+@AllArgsConstructor
 public class Qualification {
 
 	@Id
@@ -138,23 +140,5 @@ public class Qualification {
 				+ ", endDate=" + endDate + ", qualificationType=" + qualificationType + ", url=" + url + ", institute="
 				+ institute + ", degree=" + degree + "]";
 	}
-
-	public Qualification(Long qualificationId, @NotNull(message = "Start date must not be blank") LocalDate startDate,
-			@NotNull(message = "End date must not be blank") LocalDate endDate,
-			@NotBlank(message = "Qualification type must not be blank") String qualificationType,
-			@NotBlank(message = "Institute URL must not be blank") String url,
-			@NotBlank(message = "Institute Name must not be blank") String institute,
-			@NotBlank(message = "Degree must not be blank") String degree) {
-		super();
-		this.qualificationId = qualificationId;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.qualificationType = qualificationType;
-		this.url = url;
-		this.institute = institute;
-		this.degree = degree;
-	}
-
-	
 
 }

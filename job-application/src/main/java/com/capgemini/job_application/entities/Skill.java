@@ -60,24 +60,5 @@ public class Skill {
 		return "Skill [skillId=" + skillId + ", skillName=" + skillName +  "]";
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(skillId, skillName);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Skill other = (Skill) obj;
-		return Objects.equals(skillId, other.skillId) && Objects.equals(skillName, other.skillName);
-	}
-
-    
-	
 	
 }

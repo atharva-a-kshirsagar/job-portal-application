@@ -111,24 +111,6 @@ public class Experience {
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(companyName, endDate, experienceId, role, startDate, user);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		Experience other = (Experience) obj;
-		return Objects.equals(companyName, other.companyName)
-			&& Objects.equals(endDate, other.endDate)
-			&& Objects.equals(experienceId, other.experienceId)
-			&& Objects.equals(role, other.role)
-			&& Objects.equals(startDate, other.startDate)
-			&& Objects.equals(user, other.user);
-	}
-
-	@Override
 	public String toString() {
 		log.debug("toString() called on Experience object");
 		return "Experience [experienceId=" + experienceId + ", role=" + role

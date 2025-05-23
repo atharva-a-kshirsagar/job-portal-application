@@ -1,9 +1,7 @@
 package com.capgemini.job_application.entities;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -69,15 +67,15 @@ public class User {
 
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	@JsonManagedReference(value = "user-experience")
-	private List<Experience> experiences;
+	private Set<Experience> experiences;
 
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	@JsonManagedReference(value = "user-qualification")
-	private List<Qualification> qualifications;
+	private Set<Qualification> qualifications;
 
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	@JsonManagedReference(value = "user-application")
-	private List<Application> applications;
+	private Set<Application> applications;
 
 	@OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	@JsonManagedReference(value = "user-company")
@@ -86,7 +84,7 @@ public class User {
 
 	@ManyToMany
 	@JoinTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-	private List<Skill> skills;
+	private Set<Skill> skills;
 
 
 	public User(Long userId, String userName, String userEmail, String phone, String password,
@@ -102,8 +100,6 @@ public class User {
     this.gender = gender;
 }
 
-	
-
 	public User(
 		    Long userId,
 		    @NotBlank(message = "UserName must not be blank.") String userName,
@@ -115,11 +111,11 @@ public class User {
 		    @NotNull(message = "User Type must not be blank.") String userType,
 		    @Min(value = 18, message = "Age must be at least 18") Integer age,
 		    @NotNull(message = "Gender must not be blank.") String gender,
-		    List<Qualification> qualifications,
-		    List<Experience> experiences,
-		    List<Application> applications,
+		    Set<Qualification> qualifications,
+		    Set<Experience> experiences,
+		    Set<Application> applications,
 		    Company company,
-		    List<Skill> skills
+		    Set<Skill> skills
 		) {
 		    this.userId = userId;
 		    this.userName = userName;
@@ -130,11 +126,11 @@ public class User {
 		    this.userType = userType;
 		    this.age = age;
 		    this.gender = gender;
-		    this.qualifications = qualifications != null ? qualifications : new ArrayList<>();
-		    this.experiences = experiences != null ? experiences : new ArrayList<>();
-		    this.applications = applications != null ? applications : new ArrayList<>();
+		    this.qualifications = qualifications != null ? qualifications : new HashSet<>();
+		    this.experiences = experiences != null ? experiences : new HashSet<>();
+		    this.applications = applications != null ? applications : new HashSet<>();
 		    this.company = company;
-		    this.skills = skills != null ? skills : new ArrayList<>();
+		    this.skills = skills != null ? skills : new HashSet<>();
 		}
 
 
@@ -214,12 +210,46 @@ public class User {
 		this.gender = gender;
 	}
 	
-	public List<Skill> getSkills() {
+	public Set<Skill> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<Skill> skills) {
+	public void setSkills(Set<Skill> skills) {
 		this.skills = skills;
+	}
+	
+	
+
+	public Set<Experience> getExperiences() {
+		return experiences;
+	}
+
+	public void setExperiences(Set<Experience> experiences) {
+		this.experiences = experiences;
+	}
+
+	public Set<Qualification> getQualifications() {
+		return qualifications;
+	}
+
+	public void setQualifications(Set<Qualification> qualifications) {
+		this.qualifications = qualifications;
+	}
+
+	public Set<Application> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(Set<Application> applications) {
+		this.applications = applications;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	@Override
@@ -227,18 +257,6 @@ public class User {
 		return "User [userId=" + userId + ", userName=" + userName + ", userEmail=" + userEmail + ", phone=" + phone
 				+ ", password=" + password + ", address=" + address + ", userType=" + userType + ", age=" + age
 				+ ", gender=" + gender;
-	}
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		User user = (User) o;
-		return Objects.equals(userId, user.userId);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(userId);
 	}
 
 }
